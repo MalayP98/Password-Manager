@@ -1,5 +1,6 @@
 package com.key.password_manager.authentication;
 
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,8 +19,11 @@ public class AuthenticationService {
     private JWTGenerator jwtGenerator;
 
     public String registerUser(RegistrationModel registrationData) throws Exception {
-        userService.registerUser(
-                new User(registrationData.getEmail(), registrationData.getPassword()));
+        if (alreadyExist(registrationData.getEmail())) {
+            throw new Exception("User already exists.");
+        }
+        User user = new User(registrationData.getEmail(), registrationData.getPassword());
+        userService.registerUser(user);
         return jwtGenerator.generate(registrationData.getEmail());
     }
 
@@ -34,5 +38,9 @@ public class AuthenticationService {
     private Boolean authenticate(AuthenticationModel authModel) {
         UserDetails userDetails = userService.loadUserByUsername(authModel.getEmail());
         return (userDetails.getPassword().equals(authModel.getPassword()));
+    }
+
+    private Boolean alreadyExist(String email) {
+        return Objects.nonNull(userService.getUser(email));
     }
 }

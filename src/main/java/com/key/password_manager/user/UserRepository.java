@@ -8,4 +8,5 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     public User findUserByEmailAndIsEnabled(String email, Boolean isEnabled);
 
+    public User findByIdAndIsEnabled(Long userId, Boolean isEnabled);
 }

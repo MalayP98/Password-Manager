@@ -24,4 +24,12 @@ public class UserService implements UserDetailsService {
     public User registerUser(User user) {
         return userRepository.save(user);
     }
+
+    public User getUser(Long userId) {
+        return userRepository.findByIdAndIsEnabled(userId, true);
+    }
+
+    public User getUser(String email) {
+        return userRepository.findUserByEmailAndIsEnabled(email, true);
+    }
 }
