@@ -2,6 +2,8 @@ package com.key.password_manager.user;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.key.password_manager.utils.BaseModel;
 
 @Entity
@@ -14,6 +16,7 @@ public class User extends BaseModel {
 
     private String phoneNumber;
 
+    @JsonProperty(access = Access.READ_ONLY)
     private String password;
 
     private boolean isEnabled;

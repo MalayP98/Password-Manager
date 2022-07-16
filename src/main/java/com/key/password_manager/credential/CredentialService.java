@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.key.password_manager.security.EncryptionService;
+// import com.key.password_manager.encryption.EncryptionService;
 import com.key.password_manager.user.UserService;
 
 @Service
@@ -15,8 +15,8 @@ public class CredentialService {
     @Autowired
     private CredentialRepository credentialRepository;
 
-    @Autowired
-    private EncryptionService encryptionService;
+    // @Autowired
+    // private EncryptionService encryptionService;
 
     @Autowired
     private UserService userService;

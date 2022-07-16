@@ -22,7 +22,8 @@ public class UserService implements UserDetailsService {
     }
 
     public User registerUser(User user) {
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        return savedUser;
     }
 
     public User getUser(Long userId) {
