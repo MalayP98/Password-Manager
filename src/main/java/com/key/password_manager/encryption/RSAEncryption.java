@@ -1,4 +1,4 @@
-package com.key.password_manager.encryption.helpers;
+package com.key.password_manager.encryption;
 
 import java.security.Key;
 import java.security.KeyFactory;
@@ -9,9 +9,9 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import com.key.password_manager.utils.Helpers;
 
-public class RSAUtil {
+public class RSAEncryption {
 
-    public static KeyPair KeyPairGenerator() throws NoSuchAlgorithmException {
+    public static KeyPair keyPairGenerator() throws NoSuchAlgorithmException {
         KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
         generator.initialize(2048);
         KeyPair pair = generator.genKeyPair();
@@ -24,10 +24,11 @@ public class RSAUtil {
 
     public static Key getKeyFromStringForRSA(String key, String type) throws Exception {
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-        if (type.equals("public"))
+        if (type.equals("public")) {
             return keyFactory.generatePublic(new X509EncodedKeySpec(Helpers.Base64decoder(key)));
-        else if (type.equals("private"))
+        } else if (type.equals("private")) {
             return keyFactory.generatePrivate(new PKCS8EncodedKeySpec(Helpers.Base64decoder(key)));
+        }
         throw new Exception("Invalid key type.");
     }
 }

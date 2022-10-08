@@ -1,12 +1,17 @@
 package com.key.password_manager.authentication;
 
+import java.security.KeyException;
 import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-// import com.key.password_manager.encryption.EncryptionService;
+import com.key.password_manager.encryption.exceptions.EncryptionException;
+import com.key.password_manager.key.AESKey;
+import com.key.password_manager.key.KeyService;
+import com.key.password_manager.key.PasswordGenerator;
+import com.key.password_manager.key.keypair.PasswordEncryptionKeyPair;
 import com.key.password_manager.security.JWTGenerator;
 import com.key.password_manager.user.User;
 import com.key.password_manager.user.UserService;
@@ -21,15 +26,43 @@ public class AuthenticationService {
     private JWTGenerator jwtGenerator;
 
     @Autowired
+    private KeyService keyService;
+
+    @Autowired
+    private RegistrationVerification registrationVerification;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private PasswordGenerator passwordGenerator;
+
     public String registerUser(AuthenticationModel registrationData) throws Exception {
-        if (alreadyExist(registrationData.getEmail())) {
-            throw new Exception("User already exists.");
+        if (Objects.isNull(registrationData.getPassword())) {
+            registrationData.setPassword(passwordGenerator.generate());
         }
-        User user = new User(registrationData.getEmail(),
-                passwordEncoder.encode(registrationData.getPassword()));
+        registrationVerification.isRegistrationValid(registrationData);
+        User user =
+                new User(registrationData.getEmail(), getKeyPair(registrationData.getPassword()));
         userService.registerUser(user);
+
+        // ------------ TEST --------------
+
+        // String data = "Encyption Working!!!";
+
+        // Key pass = user.getPassword();
+        // pass.setKey(registrationData.getPassword());
+
+        // Key encKey = user.getEncryptionKey();
+        // encKey.setKey(keyService.unlockData(pass, encKey.getKey()));
+
+
+        // String ed = keyService.lockData(encKey, data);
+        // System.out.println("Encrypted data is -> " + ed + " \n");
+        // System.out.println("Decrypted data is -> " + keyService.unlockData(encKey, ed));
+
+        // ---------------------------
+
         return jwtGenerator.generate(registrationData.getEmail());
     }
 
@@ -43,10 +76,14 @@ public class AuthenticationService {
 
     private Boolean authenticate(AuthenticationModel authModel) {
         UserDetails userDetails = userService.loadUserByUsername(authModel.getEmail());
-        return passwordEncoder.matches(userDetails.getPassword(), authModel.getPassword());
+        return passwordEncoder.matches(authModel.getPassword(), userDetails.getPassword());
     }
 
-    private Boolean alreadyExist(String email) {
-        return Objects.nonNull(userService.getUser(email));
+    private PasswordEncryptionKeyPair getKeyPair(String password)
+            throws EncryptionException, KeyException {
+        PasswordEncryptionKeyPair passwordEncryptionKeyPair =
+                keyService.createPasswordEncryptionKeyPair(password);
+        passwordEncryptionKeyPair.getPassword().setKey(passwordEncoder.encode(password));
+        return passwordEncryptionKeyPair;
     }
 }

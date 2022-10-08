@@ -20,8 +20,8 @@ public class Credential extends BaseModel {
     private String associatedPhoneNumber;
 
     @ManyToOne(targetEntity = User.class, cascade = CascadeType.ALL)
-    @JoinTable(name = "user_cred", joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "cred_id"))
+    @JoinTable(name = "user_cred", joinColumns = @JoinColumn(name = "cred_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
     private User user;
 
     public String getUsername() {
