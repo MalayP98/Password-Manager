@@ -1,6 +1,7 @@
 package com.key.password_manager.user;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,7 +19,7 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User loadedUser = userRepository.findUserByEmailAndIsEnabled(email, true);
         return new org.springframework.security.core.userdetails.User(loadedUser.getEmail(),
-                loadedUser.getPassword(), new ArrayList<GrantedAuthority>());
+                loadedUser.getPassword().getKey(), new ArrayList<GrantedAuthority>());
     }
 
     public User registerUser(User user) {
@@ -27,7 +28,10 @@ public class UserService implements UserDetailsService {
     }
 
     public User getUser(Long userId) {
-        return userRepository.findByIdAndIsEnabled(userId, true);
+        User user = userRepository.findByIdAndIsEnabled(userId, true);
+        if (Objects.isNull(user))
+            throw new NullPointerException("No user found with id:" + userId);
+        return user;
     }
 
     public User getUser(String email) {
