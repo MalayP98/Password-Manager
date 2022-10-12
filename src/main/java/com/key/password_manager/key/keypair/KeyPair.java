@@ -14,26 +14,31 @@ public abstract class KeyPair {
 
     public KeyPair(Key firstKey, Key secondKey) {
         setFirstKey(firstKey);
-        setFirstKey(secondKey);
+        setSecondKey(secondKey);
     }
 
-    public Key firstKey() {
+    protected Key firstKey() {
         return firstKey;
     }
 
-    public Key secondKey() {
+    protected Key secondKey() {
         return secondKey;
     }
 
     public void setFirstKey(Key firstKey) {
         if (Objects.isNull(firstKey))
-            throw new NullPointerException("One of the key in pair is null.");
+            throw new NullPointerException("One of the key pair is null.");
         this.firstKey = firstKey;
     }
 
     public void setSecondKey(Key secondKey) {
         if (Objects.isNull(secondKey))
-            throw new NullPointerException("One of the key in pair is null.");
+            throw new NullPointerException("One of the key pair is null.");
         this.secondKey = secondKey;
+    }
+
+    @Override
+    public String toString() {
+        return "(" + this.firstKey() + ", " + this.secondKey() + ")";
     }
 }

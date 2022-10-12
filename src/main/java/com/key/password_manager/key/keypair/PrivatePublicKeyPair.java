@@ -7,7 +7,7 @@ public class PrivatePublicKeyPair extends KeyPair {
     private PrivatePublicKeyPair() {
     }
 
-    private PrivatePublicKeyPair(Key privateKey, Key publicKey) {
+    public PrivatePublicKeyPair(Key privateKey, Key publicKey) {
         super(privateKey, publicKey);
     }
 

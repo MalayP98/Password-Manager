@@ -7,9 +7,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.key.password_manager.encryption.RSAKeyPairStore;
 import com.key.password_manager.encryption.exceptions.EncryptionException;
 import com.key.password_manager.key.AESKey;
-import com.key.password_manager.key.KeyService;
+import com.key.password_manager.key.AESKeyService;
 import com.key.password_manager.key.PasswordGenerator;
 import com.key.password_manager.key.keypair.PasswordEncryptionKeyPair;
 import com.key.password_manager.security.JWTGenerator;
@@ -26,10 +27,13 @@ public class AuthenticationService {
     private JWTGenerator jwtGenerator;
 
     @Autowired
-    private KeyService keyService;
+    private AESKeyService keyService;
 
     @Autowired
     private RegistrationVerification registrationVerification;
+
+    @Autowired
+    private RSAKeyPairStore rsaKeyPairRegistry;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -42,9 +46,8 @@ public class AuthenticationService {
             registrationData.setPassword(passwordGenerator.generate());
         }
         registrationVerification.isRegistrationValid(registrationData);
-        User user =
-                new User(registrationData.getEmail(), getKeyPair(registrationData.getPassword()));
-        userService.registerUser(user);
+        userService.registerUser(
+                new User(registrationData.getEmail(), getKeyPair(registrationData.getPassword())));
 
         // ------------ TEST --------------
 

@@ -7,9 +7,18 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import com.key.password_manager.key.RSAKey;
+import com.key.password_manager.key.keypair.PrivatePublicKeyPair;
 import com.key.password_manager.utils.Helpers;
 
 public class RSAEncryption {
+
+    public static PrivatePublicKeyPair createKeyPair() throws NoSuchAlgorithmException {
+        KeyPair privatePublicKeyPair = keyPairGenerator();
+        return new PrivatePublicKeyPair(
+                new RSAKey(convertKeyToString(privatePublicKeyPair.getPrivate())),
+                new RSAKey(convertKeyToString(privatePublicKeyPair.getPublic())));
+    }
 
     public static KeyPair keyPairGenerator() throws NoSuchAlgorithmException {
         KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");

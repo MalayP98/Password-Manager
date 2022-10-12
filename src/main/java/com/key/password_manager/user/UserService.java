@@ -8,12 +8,17 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import com.key.password_manager.encryption.RSAKeyPairStore;
+import com.key.password_manager.key.Key;
 
 @Service
 public class UserService implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RSAKeyPairStore rsaKeyPairStore;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -36,5 +41,9 @@ public class UserService implements UserDetailsService {
 
     public User getUser(String email) {
         return userRepository.findUserByEmailAndIsEnabled(email, true);
+    }
+
+    public Key publicKeyForUser(Long userId) throws Exception {
+        return rsaKeyPairStore.getRSAKeyPair(userId).getPublicKey();
     }
 }
