@@ -9,12 +9,14 @@ public abstract class AbstarctKey extends BaseModel implements Key {
 
     private String key;
 
-    public AbstarctKey() {
+    private KeyType keyType;
 
+    public AbstarctKey() {
     }
 
-    public AbstarctKey(String key) {
+    public AbstarctKey(String key, KeyType keyType) {
         setKey(key);
+        setKeyType(keyType);
     }
 
     @Override
@@ -28,5 +30,18 @@ public abstract class AbstarctKey extends BaseModel implements Key {
             throw new NullPointerException("Key is either null or empty.");
         }
         this.key = key;
+    }
+
+    @Override
+    public KeyType type() {
+        return keyType;
+    }
+
+    public void setKeyType(KeyType keyType) {
+        if (Objects.isNull(keyType)) {
+            throw new NullPointerException(
+                    "No type provided while key creation. Cannot create key!");
+        }
+        this.keyType = keyType;
     }
 }

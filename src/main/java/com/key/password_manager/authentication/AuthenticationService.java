@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.key.password_manager.encryption.RSAKeyPairStore;
 import com.key.password_manager.encryption.exceptions.EncryptionException;
 import com.key.password_manager.key.AESKey;
+import com.key.password_manager.keypair.KeyPairFactory;
 import com.key.password_manager.keypair.PasswordEncryptionKeyPair;
 import com.key.password_manager.keyservices.AESKeyService;
 import com.key.password_manager.security.JWTGenerator;
@@ -27,13 +28,10 @@ public class AuthenticationService {
     private JWTGenerator jwtGenerator;
 
     @Autowired
-    private AESKeyService keyService;
+    private KeyPairFactory keyPairFactory;
 
     @Autowired
     private RegistrationVerification registrationVerification;
-
-    @Autowired
-    private RSAKeyPairStore rsaKeyPairRegistry;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -85,7 +83,7 @@ public class AuthenticationService {
     private PasswordEncryptionKeyPair getKeyPair(String password)
             throws EncryptionException, KeyException {
         PasswordEncryptionKeyPair passwordEncryptionKeyPair =
-                keyService.createPasswordEncryptionKeyPair(password);
+                keyPairFactory.createPasswordEncryptionKeyPair(password, null);
         passwordEncryptionKeyPair.getPassword().setKey(passwordEncoder.encode(password));
         return passwordEncryptionKeyPair;
     }

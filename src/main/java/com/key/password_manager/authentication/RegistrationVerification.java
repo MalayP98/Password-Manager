@@ -11,10 +11,10 @@ import com.key.password_manager.user.UserService;
 @Scope("singleton")
 public class RegistrationVerification {
 
-    private final String STRONG_PASSWORD_CHECK =
+    private final String STRONG_PASSWORD_REGEX =
             "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;_',?/*~$^+=<>]).{8,20}$";
 
-    private final Pattern PATTERN = Pattern.compile(STRONG_PASSWORD_CHECK);
+    private final Pattern PATTERN = Pattern.compile(STRONG_PASSWORD_REGEX);
 
     @Autowired
     private UserService userService;
