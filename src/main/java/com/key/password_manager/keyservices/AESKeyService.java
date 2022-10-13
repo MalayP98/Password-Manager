@@ -25,26 +25,30 @@ public class AESKeyService implements LockManager {
     @Autowired
     private PasswordGenerator passwordGenerator;
 
-    private AESKey createNewKey(String key, AESKeyTypes type) {
+    public AESKey createKey(String key, String salt, String iv, AESKeyTypes type) {
+        return new AESKey(key, salt, iv, type);
+    }
+
+    public AESKey createKey(String key, AESKeyTypes type) {
         return new AESKey(key, Helpers.randomString(), Helpers.NByteString(16), type);
     }
 
-    public AESKey createNewPassword(String password) {
+    public AESKey createPassword(String password) {
         if (Objects.isNull(password))
             throw new NullPointerException("Password cannot be null.");
-        return createNewKey(password, AESKeyTypes.PASSWORD);
+        return createKey(password, AESKeyTypes.PASSWORD);
     }
 
-    public AESKey createNewEncryptionKey(String encryptionKey) {
+    public AESKey createEncryptionKey(String encryptionKey) {
         if (Objects.isNull(encryptionKey))
             throw new NullPointerException("Encryption key cannot be null.");
-        return createNewKey(encryptionKey, AESKeyTypes.ENCYPTION_KEY);
+        return createKey(encryptionKey, AESKeyTypes.ENCYPTION_KEY);
     }
 
     public PasswordEncryptionKeyPair createPasswordEncryptionKeyPair(String password)
             throws EncryptionException, KeyException {
-        AESKey passwordKey = createNewPassword(password);
-        AESKey encryptionKey = createNewEncryptionKey(passwordGenerator.generate());
+        AESKey passwordKey = createPassword(password);
+        AESKey encryptionKey = createEncryptionKey(passwordGenerator.generate());
         encryptionKey.setKey(lock(passwordKey, encryptionKey.getKey()));
         return new PasswordEncryptionKeyPair(passwordKey, encryptionKey);
     }

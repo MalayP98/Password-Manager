@@ -6,9 +6,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.key.password_manager.constants.CredentialConstants;
 import com.key.password_manager.encryption.RSAKeyPairStore;
 import com.key.password_manager.encryption.exceptions.DecryptionException;
 import com.key.password_manager.encryption.exceptions.EncryptionException;
+import com.key.password_manager.key.AESKeyTypes;
 import com.key.password_manager.key.Key;
 import com.key.password_manager.keyservices.AESKeyService;
 import com.key.password_manager.keyservices.RSAKeyService;
@@ -27,7 +29,7 @@ public class CredentialService {
     private AESKeyService aesKeyService;
 
     @Autowired
-    private RSAKeyPairStore rsaKeyRegistry;
+    private RSAKeyPairStore rsaKeyStore;
 
     @Autowired
     private RSAKeyService rsaKeyService;
@@ -41,7 +43,8 @@ public class CredentialService {
             if (Objects.isNull(credentialOwner))
                 throw new NullPointerException("Credential owner not found.");
             credential.setUser(credentialOwner);
-            credentialOwner.getPassword().setKey(decryptPassword(userId, lockedPassword));
+            credentialOwner.getPassword().setKey(decryptPassword(
+                    rsaKeyStore.getRSAKeyPair(userId).getPrivateKey(), lockedPassword));
             credential.setPassword(encryptCredential(credentialOwner.getPassword(),
                     credentialOwner.getEncryptionKey(), credential.getPassword()));
             credentialRepository.save(credential);
@@ -81,8 +84,11 @@ public class CredentialService {
         return decryptedCredential;
     }
 
-    private String decryptPassword(Long userId, String key)
+    private String decryptPassword(Key key, String password)
             throws EncryptionException, KeyException, Exception {
-        return rsaKeyService.unlock(rsaKeyRegistry.getRSAKeyPair(userId).getPrivateKey(), key);
+        String unlockedPassword = rsaKeyService.unlock(key, password);
+        return aesKeyService
+                .lock(aesKeyService.createKey(unlockedPassword, CredentialConstants.DEFAULT_SALT,
+                        CredentialConstants.DEFAULT_IV, AESKeyTypes.PASSWORD), unlockedPassword);
     }
 }
