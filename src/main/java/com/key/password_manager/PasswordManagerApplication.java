@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import com.key.password_manager.constants.CredentialConstants;
 import com.key.password_manager.encryption.RSAKeyPairStore;
 import com.key.password_manager.key.AESKey;
-import com.key.password_manager.key.AESKeyTypes;
+import com.key.password_manager.key.AESKeyType;
 import com.key.password_manager.keyservices.AESKeyService;
 import com.key.password_manager.keyservices.RSAKeyService;
 

@@ -15,17 +15,17 @@ public class AESKey extends AbstarctKey {
     private String iv;
 
     @Enumerated(EnumType.STRING)
-    private AESKeyTypes type;
+    private AESKeyType type;
 
     public AESKey() {
         super();
     }
 
-    public AESKey(String key, String salt, String iv, AESKeyTypes type) {
-        super(key);
+    public AESKey(String key, String salt, String iv, AESKeyType type) {
+        super(key, KeyType.AES);
         setSalt(salt);
         setIv(iv);
-        setType(type);
+        setSubKeyType(type);
     }
 
     public String getSalt() {
@@ -48,13 +48,17 @@ public class AESKey extends AbstarctKey {
         this.iv = iv;
     }
 
-    public AESKeyTypes getType() {
-        return type;
+    public boolean isPasswordKey(AESKeyType subType) {
+        return AESKeyType.PASSWORD.equals(subType);
     }
 
-    public void setType(AESKeyTypes type) {
-        if (Objects.isNull(type))
+    public boolean isEncryptionKey(AESKeyType subType) {
+        return AESKeyType.ENCYPTION_KEY.equals(subType);
+    }
+
+    public void setSubKeyType(AESKeyType subKeyType) {
+        if (Objects.isNull(subKeyType))
             throw new NullPointerException("Key type is not supplied while creating AES Key");
-        this.type = type;
+        this.type = subKeyType;
     }
 }

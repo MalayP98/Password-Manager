@@ -10,32 +10,32 @@ import com.key.password_manager.constants.CredentialConstants;
 import com.key.password_manager.encryption.RSAKeyPairStore;
 import com.key.password_manager.encryption.exceptions.DecryptionException;
 import com.key.password_manager.encryption.exceptions.EncryptionException;
-import com.key.password_manager.key.AESKeyTypes;
+import com.key.password_manager.key.AESKeyType;
 import com.key.password_manager.key.Key;
-import com.key.password_manager.keyservices.AESKeyService;
-import com.key.password_manager.keyservices.RSAKeyService;
+import com.key.password_manager.key.Lock;
+import com.key.password_manager.keyservices.KeyFactory;
 import com.key.password_manager.user.User;
 import com.key.password_manager.user.UserService;
 
 @Service
 public class CredentialService {
 
-    private final Logger LOG = LoggerFactory.getLogger(this.getClass());
-
     @Autowired
     private CredentialRepository credentialRepository;
 
     @Autowired
-    private AESKeyService aesKeyService;
+    private KeyFactory keyFactory;
+
+    @Autowired
+    private Lock lock;
 
     @Autowired
     private RSAKeyPairStore rsaKeyStore;
 
     @Autowired
-    private RSAKeyService rsaKeyService;
-
-    @Autowired
     private UserService userService;
+
+    private final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     public String addCredential(Credential credential, Long userId, String lockedPassword) {
         try {
@@ -70,25 +70,24 @@ public class CredentialService {
 
     private String encryptCredential(Key password, Key encryptionKey, String credential)
             throws DecryptionException, KeyException {
-        encryptionKey.setKey(aesKeyService.unlock(password, encryptionKey.getKey()));
-        String encryptedCredential = aesKeyService.lock(encryptionKey, credential);
-        encryptionKey.setKey(aesKeyService.lock(password, encryptionKey.getKey()));
+        encryptionKey.setKey(lock.unlock(password, encryptionKey.getKey()));
+        String encryptedCredential = lock.lock(encryptionKey, credential);
+        encryptionKey.setKey(lock.lock(password, encryptionKey.getKey()));
         return encryptedCredential;
     }
 
     private String decryptCredential(Key password, Key encryptionKey, String credential)
             throws DecryptionException, KeyException {
-        encryptionKey.setKey(aesKeyService.unlock(password, encryptionKey.getKey()));
-        String decryptedCredential = aesKeyService.unlock(encryptionKey, credential);
-        encryptionKey.setKey(aesKeyService.lock(password, encryptionKey.getKey()));
+        encryptionKey.setKey(lock.unlock(password, encryptionKey.getKey()));
+        String decryptedCredential = lock.unlock(encryptionKey, credential);
+        encryptionKey.setKey(lock.lock(password, encryptionKey.getKey()));
         return decryptedCredential;
     }
 
     private String decryptPassword(Key key, String password)
             throws EncryptionException, KeyException, Exception {
-        String unlockedPassword = rsaKeyService.unlock(key, password);
-        return aesKeyService
-                .lock(aesKeyService.createKey(unlockedPassword, CredentialConstants.DEFAULT_SALT,
-                        CredentialConstants.DEFAULT_IV, AESKeyTypes.PASSWORD), unlockedPassword);
+        String unlockedPassword = lock.unlock(key, password);
+        return lock.lock(keyFactory.createAESKey(unlockedPassword, CredentialConstants.DEFAULT_SALT,
+                CredentialConstants.DEFAULT_IV, AESKeyType.PASSWORD), unlockedPassword);
     }
 }

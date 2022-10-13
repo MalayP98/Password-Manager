@@ -6,14 +6,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.key.password_manager.keypair.KeyPairFactory;
 import com.key.password_manager.keypair.PrivatePublicKeyPair;
-import com.key.password_manager.keyservices.RSAKeyService;
 
 @Service
 public class RSAKeyPairStore {
 
     @Autowired
-    private RSAKeyService rsaKeyService;
+    private KeyPairFactory keyPairFactory;
 
     private Logger LOG = LoggerFactory.getLogger(RSAKeyPairStore.class);
 
@@ -22,7 +22,7 @@ public class RSAKeyPairStore {
     public void register(Long userId) {
         if (!rsaKeyRegistry.containsKey(userId)) {
             try {
-                rsaKeyRegistry.put(userId, rsaKeyService.createPrivatePublicKeyPair());
+                rsaKeyRegistry.put(userId, keyPairFactory.createPrivatePublicKeyPair());
             } catch (NoSuchAlgorithmException e) {
                 LOG.error("Unable to register user with id " + userId);
             }

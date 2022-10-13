@@ -10,35 +10,35 @@ import org.springframework.stereotype.Service;
 import com.key.password_manager.encryption.EncryptionStrategy;
 import com.key.password_manager.encryption.exceptions.EncryptionException;
 import com.key.password_manager.key.Key;
-import com.key.password_manager.key.LockManager;
+import com.key.password_manager.key.Lock;
 import com.key.password_manager.key.RSAKey;
 import com.key.password_manager.keypair.PrivatePublicKeyPair;
 import com.key.password_manager.utils.Helpers;
 
 @Service("RSAKeyService")
-public class RSAKeyService implements LockManager {
+public class RSAKeyService {
 
-    @Autowired
-    @Qualifier("RSA")
-    private EncryptionStrategy rsaEncrypter;
+    // @Autowired
+    // @Qualifier("RSA")
+    // private EncryptionStrategy rsaEncrypter;
 
 
 
-    @Override
-    public String lock(Key key, String data) throws EncryptionException, KeyException {
-        return rsaEncrypter.encrypt(key, data);
-    }
+    // @Override
+    // public String lock(Key key, String data) throws EncryptionException, KeyException {
+    // return rsaEncrypter.encrypt(key, data);
+    // }
 
-    @Override
-    public String unlock(Key key, String data) throws EncryptionException, KeyException {
-        return rsaEncrypter.decrypt(key, data);
-    }
+    // @Override
+    // public String unlock(Key key, String data) throws EncryptionException, KeyException {
+    // return rsaEncrypter.decrypt(key, data);
+    // }
 
-    public PrivatePublicKeyPair createPrivatePublicKeyPair() throws NoSuchAlgorithmException {
-        KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
-        generator.initialize(2048);
-        KeyPair pair = generator.genKeyPair();
-        return new PrivatePublicKeyPair(new RSAKey(Helpers.keyToString(pair.getPrivate())),
-                new RSAKey(Helpers.keyToString(pair.getPublic())));
-    }
+    // public PrivatePublicKeyPair createPrivatePublicKeyPair() throws NoSuchAlgorithmException {
+    // KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
+    // generator.initialize(2048);
+    // KeyPair pair = generator.genKeyPair();
+    // return new PrivatePublicKeyPair(new RSAKey(Helpers.keyToString(pair.getPrivate())),
+    // new RSAKey(Helpers.keyToString(pair.getPublic())));
+    // }
 }
