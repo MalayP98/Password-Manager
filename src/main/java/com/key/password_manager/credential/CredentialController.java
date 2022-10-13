@@ -20,9 +20,9 @@ public class CredentialController {
 
     @PostMapping("/{userId}")
     public ResponseEntity<String> addCredential(@RequestBody Credential credential,
-            @PathVariable Long userId) {
-        return new ResponseEntity<String>(credentialService.addCredential(credential, userId),
-                HttpStatus.OK);
+            @PathVariable Long userId, @RequestParam(required = true) String password) {
+        return new ResponseEntity<String>(
+                credentialService.addCredential(credential, userId, password), HttpStatus.OK);
     }
 
     @GetMapping
