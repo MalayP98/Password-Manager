@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.key.password_manager.user.User;
 import com.key.password_manager.utils.BaseModel;
 
@@ -22,6 +23,7 @@ public class Credential extends BaseModel {
     @ManyToOne(targetEntity = User.class, cascade = CascadeType.ALL)
     @JoinTable(name = "user_cred", joinColumns = @JoinColumn(name = "cred_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @JsonIgnore
     private User user;
 
     public String getUsername() {
