@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
+import com.key.password_manager.key.types.AESKeyType;
+import com.key.password_manager.key.types.KeyType;
 
 @Entity
 @Table(name = "key")

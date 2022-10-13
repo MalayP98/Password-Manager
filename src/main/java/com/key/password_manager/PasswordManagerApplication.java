@@ -4,12 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import com.key.password_manager.constants.CredentialConstants;
+import com.key.password_manager.authentication.AuthenticationModel;
+import com.key.password_manager.authentication.AuthenticationService;
+import com.key.password_manager.credential.Credential;
+import com.key.password_manager.credential.CredentialService;
+import com.key.password_manager.encryption.Lock;
 import com.key.password_manager.encryption.RSAKeyPairStore;
-import com.key.password_manager.key.AESKey;
-import com.key.password_manager.key.AESKeyType;
-import com.key.password_manager.keyservices.AESKeyService;
-import com.key.password_manager.keyservices.RSAKeyService;
+import com.key.password_manager.keypair.PrivatePublicKeyPair;
 
 @SpringBootApplication
 public class PasswordManagerApplication implements CommandLineRunner {
@@ -18,10 +19,13 @@ public class PasswordManagerApplication implements CommandLineRunner {
 	private RSAKeyPairStore rsaKeyPairStore;
 
 	@Autowired
-	private RSAKeyService rsaKeyService;
+	private Lock lock;
 
 	@Autowired
-	private AESKeyService aesKeyService;
+	private CredentialService credentialService;
+
+	@Autowired
+	private AuthenticationService authenticationService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(PasswordManagerApplication.class, args);
@@ -29,6 +33,22 @@ public class PasswordManagerApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
+
+		// AuthenticationModel am = new AuthenticationModel();
+		// am.setEmail("malay123@gmail.com");
+		// am.setPassword("Malay@123");
+
+		// authenticationService.registerUser(am);
+
+
+		// ------------ CRED LOCK ON REGISTER TEST ----------
+		// PrivatePublicKeyPair keyPair = rsaKeyPairStore.getRSAKeyPair(11L);
+		// String lockedPassword = lock.lock(keyPair.getPublicKey(), "Malay@123");
+		// Credential credential = new Credential();
+		// credential.setPassword("password");
+		// credential.setId(67L);
+		// String status = credentialService.addCredential(credential, 11L, lockedPassword);
+		// System.out.println("\n\n ----> " + status + "\n\n");
 
 
 		// -------- TEST FOR PASSWORD ENCRYPTION DECRYPTION --------

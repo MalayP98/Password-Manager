@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import com.key.password_manager.encryption.exceptions.DecryptionException;
 import com.key.password_manager.encryption.exceptions.EncryptionException;
 import com.key.password_manager.key.Key;
-import com.key.password_manager.key.RSAKeyType;
+import com.key.password_manager.key.types.RSAKeyType;
 import com.key.password_manager.utils.Helpers;
 
 @Component("RSA")

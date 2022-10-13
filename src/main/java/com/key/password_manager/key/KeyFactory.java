@@ -1,16 +1,12 @@
-package com.key.password_manager.keyservices;
+package com.key.password_manager.key;
 
 import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import com.key.password_manager.key.AESKey;
-import com.key.password_manager.key.AESKeyType;
-import com.key.password_manager.key.Key;
-import com.key.password_manager.key.KeyType;
-import com.key.password_manager.key.RSAKey;
-import com.key.password_manager.key.RSAKeyType;
+import com.key.password_manager.key.types.AESKeyType;
+import com.key.password_manager.key.types.RSAKeyType;
 import com.key.password_manager.utils.Helpers;
 import com.key.password_manager.utils.PasswordGenerator;
 
@@ -33,7 +29,7 @@ public class KeyFactory {
         }
         if (Objects.isNull(iv) || iv.isEmpty()) {
             LOG.debug("IV is null or empty creating random IV.");
-            salt = Helpers.NByteString(16);
+            iv = Helpers.NByteString(16);
         }
         if (Objects.isNull(type)) {
             type = AESKeyType.PASSWORD;

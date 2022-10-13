@@ -1,14 +1,16 @@
-package com.key.password_manager.key;
+package com.key.password_manager.encryption;
 
 import java.security.KeyException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import com.key.password_manager.encryption.EncryptionStrategy;
+import org.springframework.stereotype.Component;
 import com.key.password_manager.encryption.exceptions.DecryptionException;
 import com.key.password_manager.encryption.exceptions.EncryptionException;
+import com.key.password_manager.key.Key;
 
+@Component
 public class Lock {
 
     @Autowired
