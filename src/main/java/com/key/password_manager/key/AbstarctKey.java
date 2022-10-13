@@ -2,6 +2,7 @@ package com.key.password_manager.key;
 
 import java.util.Objects;
 import javax.persistence.MappedSuperclass;
+import com.key.password_manager.key.types.KeyType;
 import com.key.password_manager.utils.BaseModel;
 
 @MappedSuperclass

@@ -1,6 +1,8 @@
 package com.key.password_manager.key;
 
 import java.util.Objects;
+import com.key.password_manager.key.types.KeyType;
+import com.key.password_manager.key.types.RSAKeyType;
 
 public class RSAKey extends AbstarctKey {
 

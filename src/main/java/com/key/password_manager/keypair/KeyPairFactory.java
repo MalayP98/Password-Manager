@@ -5,13 +5,15 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import com.key.password_manager.encryption.Lock;
 import com.key.password_manager.encryption.exceptions.EncryptionException;
 import com.key.password_manager.key.Key;
-import com.key.password_manager.key.KeyType;
-import com.key.password_manager.key.Lock;
-import com.key.password_manager.key.RSAKeyType;
-import com.key.password_manager.keyservices.KeyFactory;
+import com.key.password_manager.key.KeyFactory;
+import com.key.password_manager.key.types.KeyType;
+import com.key.password_manager.key.types.RSAKeyType;
 
+@Component
 public class KeyPairFactory {
 
     @Autowired
