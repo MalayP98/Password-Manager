@@ -1,4 +1,4 @@
-package com.key.password_manager.key.keypair;
+package com.key.password_manager.keypair;
 
 import java.util.Objects;
 import com.key.password_manager.key.Key;

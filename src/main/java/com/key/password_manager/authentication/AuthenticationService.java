@@ -10,12 +10,12 @@ import org.springframework.stereotype.Service;
 import com.key.password_manager.encryption.RSAKeyPairStore;
 import com.key.password_manager.encryption.exceptions.EncryptionException;
 import com.key.password_manager.key.AESKey;
-import com.key.password_manager.key.AESKeyService;
-import com.key.password_manager.key.PasswordGenerator;
-import com.key.password_manager.key.keypair.PasswordEncryptionKeyPair;
+import com.key.password_manager.keypair.PasswordEncryptionKeyPair;
+import com.key.password_manager.keyservices.AESKeyService;
 import com.key.password_manager.security.JWTGenerator;
 import com.key.password_manager.user.User;
 import com.key.password_manager.user.UserService;
+import com.key.password_manager.utils.PasswordGenerator;
 
 @Service
 public class AuthenticationService {

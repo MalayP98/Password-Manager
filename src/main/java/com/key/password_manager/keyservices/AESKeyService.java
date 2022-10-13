@@ -1,4 +1,4 @@
-package com.key.password_manager.key;
+package com.key.password_manager.keyservices;
 
 import java.security.KeyException;
 import java.util.Objects;
@@ -7,8 +7,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import com.key.password_manager.encryption.EncryptionStrategy;
 import com.key.password_manager.encryption.exceptions.EncryptionException;
-import com.key.password_manager.key.keypair.PasswordEncryptionKeyPair;
+import com.key.password_manager.key.AESKey;
+import com.key.password_manager.key.AESKeyTypes;
+import com.key.password_manager.key.Key;
+import com.key.password_manager.key.LockManager;
+import com.key.password_manager.keypair.PasswordEncryptionKeyPair;
 import com.key.password_manager.utils.Helpers;
+import com.key.password_manager.utils.PasswordGenerator;
 
 @Service("AESKeyService")
 public class AESKeyService implements LockManager {

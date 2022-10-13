@@ -1,5 +1,6 @@
 package com.key.password_manager.utils;
 
+import java.security.Key;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.UUID;
@@ -22,5 +23,9 @@ public class Helpers {
 
     public static byte[] Base64decoder(String str) {
         return Base64.getDecoder().decode(str);
+    }
+
+    public static String keyToString(Key key) {
+        return Base64encoder(key.getEncoded());
     }
 }

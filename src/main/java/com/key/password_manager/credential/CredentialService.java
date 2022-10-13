@@ -10,8 +10,8 @@ import com.key.password_manager.encryption.RSAKeyPairStore;
 import com.key.password_manager.encryption.exceptions.DecryptionException;
 import com.key.password_manager.encryption.exceptions.EncryptionException;
 import com.key.password_manager.key.Key;
-import com.key.password_manager.key.RSAKeyService;
-import com.key.password_manager.key.AESKeyService;
+import com.key.password_manager.keyservices.AESKeyService;
+import com.key.password_manager.keyservices.RSAKeyService;
 import com.key.password_manager.user.User;
 import com.key.password_manager.user.UserService;
 

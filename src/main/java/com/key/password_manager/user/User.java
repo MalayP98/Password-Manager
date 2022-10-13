@@ -7,7 +7,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import com.key.password_manager.key.AESKey;
 import com.key.password_manager.key.Key;
-import com.key.password_manager.key.keypair.PasswordEncryptionKeyPair;
+import com.key.password_manager.keypair.PasswordEncryptionKeyPair;
 import com.key.password_manager.utils.BaseModel;
 
 @Entity
