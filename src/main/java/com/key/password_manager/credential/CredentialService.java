@@ -7,14 +7,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.key.password_manager.constants.CredentialConstants;
 import com.key.password_manager.encryption.Lock;
 import com.key.password_manager.encryption.RSAKeyPairStore;
 import com.key.password_manager.encryption.exceptions.DecryptionException;
 import com.key.password_manager.encryption.exceptions.EncryptionException;
 import com.key.password_manager.key.Key;
-import com.key.password_manager.key.KeyFactory;
-import com.key.password_manager.key.types.AESKeyType;
 import com.key.password_manager.user.User;
 import com.key.password_manager.user.UserService;
 
@@ -58,14 +55,16 @@ public class CredentialService {
         return "Success";
     }
 
-    public Credential retriveCredential(Long userId, Long credentialId) {
+    public Credential retriveCredential(Long userId, Long credentialId, String lockedPassword) {
         Credential credential = null;
         try {
-            User credentialOwner = userService.getUser(userId);
-            credential = credentialRepository.findByUserIdAndCredentialId(userId, credentialId);
+            credential = credentialRepository.findByIdAndUserId(credentialId, userId);
+            User credentialOwner = credential.getUser();
+            credentialOwner.getPassword().setKey(decryptPassword(
+                    rsaKeyStore.getRSAKeyPair(userId).getPrivateKey(), lockedPassword));
             credential.setPassword(decryptCredential(credentialOwner.getPassword(),
                     credentialOwner.getEncryptionKey(), credential.getPassword()));
-        } catch (DecryptionException | KeyException e) {
+        } catch (Exception e) {
             LOG.error("Cannot get credential. Error message: {}", e.getMessage());
         }
         return credential;

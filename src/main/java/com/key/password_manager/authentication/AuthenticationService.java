@@ -43,24 +43,6 @@ public class AuthenticationService {
         registrationVerification.isRegistrationValid(registrationData);
         userService.registerUser(
                 new User(registrationData.getEmail(), getKeyPair(registrationData.getPassword())));
-
-        // ------------ TEST --------------
-
-        // String data = "Encyption Working!!!";
-
-        // Key pass = user.getPassword();
-        // pass.setKey(registrationData.getPassword());
-
-        // Key encKey = user.getEncryptionKey();
-        // encKey.setKey(keyService.unlockData(pass, encKey.getKey()));
-
-
-        // String ed = keyService.lockData(encKey, data);
-        // System.out.println("Encrypted data is -> " + ed + " \n");
-        // System.out.println("Decrypted data is -> " + keyService.unlockData(encKey, ed));
-
-        // ---------------------------
-
         return jwtGenerator.generate(registrationData.getEmail());
     }
 
