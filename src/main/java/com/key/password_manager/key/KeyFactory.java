@@ -55,4 +55,16 @@ public class KeyFactory {
     public Key createRSAKey(java.security.Key key, RSAKeyType subKeyType) {
         return createRSAKey(Helpers.keyToString(key), subKeyType);
     }
+
+    public Key clone(Key key) {
+        switch (key.type()) {
+            case AES:
+                return new AESKey((AESKey) key);
+            case RSA:
+                return new RSAKey((RSAKey) key);
+            default:
+                break;
+        }
+        return null;
+    }
 }

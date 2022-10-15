@@ -32,7 +32,7 @@ public class KeyPairFactory {
 
     public PasswordEncryptionKeyPair createPasswordEncryptionKeyPair(Key password,
             Key encryptionKey) throws Exception {
-        if (!KeyType.AES.equals(password.type()) || !KeyType.AES.equals(encryptionKey)) {
+        if (!KeyType.AES.equals(password.type()) || !KeyType.AES.equals(encryptionKey.type())) {
             throw new Exception("Only AES key type can form Password-Encryption key pair.");
         }
         return new PasswordEncryptionKeyPair(password, encryptionKey);

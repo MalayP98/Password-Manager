@@ -16,6 +16,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import org.springframework.stereotype.Component;
+import com.key.password_manager.encryption.exceptions.DecryptionException;
 import com.key.password_manager.encryption.exceptions.EncryptionException;
 import com.key.password_manager.key.AESKey;
 import com.key.password_manager.key.Key;
@@ -31,8 +32,7 @@ public class AESEncryptionStrategy implements EncryptionStrategy {
             return encrypt(getKeyFromStringForAES(aesKey.getKey(), aesKey.getSalt()),
                     convertStringToIv(aesKey.getIv()), data);
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new EncryptionException("Unable to encrypt data!");
+            throw new EncryptionException("Unable to encrypt data! " + e.getMessage());
         }
     }
 
@@ -43,7 +43,7 @@ public class AESEncryptionStrategy implements EncryptionStrategy {
             return decrypt(getKeyFromStringForAES(aesKey.getKey(), aesKey.getSalt()),
                     convertStringToIv(aesKey.getIv()), data);
         } catch (Exception e) {
-            throw new EncryptionException("Unable to decrypt data!  " + e.getMessage());
+            throw new DecryptionException("Unable to decrypt data! " + e.getMessage());
         }
     }
 

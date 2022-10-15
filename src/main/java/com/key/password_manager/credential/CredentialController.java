@@ -36,6 +36,6 @@ public class CredentialController {
     @GetMapping("/metadata")
     public ResponseEntity<String> defaultKeyMetadata() {
         return new ResponseEntity<String>("{ salt : " + CredentialConstants.DEFAULT_SALT + ", iv : "
-                + CredentialConstants.DEFAULT_IV + "}", HttpStatus.OK);
+                + CredentialConstants.DEFAULT_IV + " }", HttpStatus.OK);
     }
 }

@@ -1,6 +1,7 @@
 package com.key.password_manager.encryption;
 
 import java.security.KeyException;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,5 +54,24 @@ public class Lock {
             LOG.error("Somthing went wrong while unlocking data.", e.getMessage());
         }
         return null;
+    }
+
+    private Key getSequentiallyUnlockedKey(List<Key> keys) {
+        if (keys.size() < 2) {
+            LOG.error("Sequential unlocking requires 2 or more keys.");
+            return null;
+        }
+        for (int i = 0; i < keys.size() - 1; i++) {
+            keys.get(i + 1).setKey(unlock(keys.get(i), keys.get(i + 1).getKey()));
+        }
+        return keys.get(keys.size() - 1);
+    }
+
+    public String squentialLock(List<Key> keys, String data) {
+        return lock(getSequentiallyUnlockedKey(keys), data);
+    }
+
+    public String squentialUnlock(List<Key> keys, String data) {
+        return unlock(getSequentiallyUnlockedKey(keys), data);
     }
 }

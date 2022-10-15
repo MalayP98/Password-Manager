@@ -42,13 +42,6 @@ public class PasswordManagerApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
-		// AuthenticationModel am = new AuthenticationModel();
-		// am.setEmail("malay123@gmail.com");
-		// am.setPassword("Malay@123");
-
-		// authenticationService.registerUser(am);
-
-
 		// ------------ CRED LOCK ON REGISTER TEST ----------
 		// PrivatePublicKeyPair keyPair = rsaKeyPairStore.getRSAKeyPair(11L);
 		// String lockedPassword = lock.lock(keyPair.getPublicKey(), "Malay@123");
@@ -64,19 +57,6 @@ public class PasswordManagerApplication implements CommandLineRunner {
 		// String lockedCred =
 		// credentialService.retriveCredential(11L, 18L, lockedPassword).getPassword();
 		// System.out.println(lock.unlock(user.getPassword(), lockedCred));
-
-		// System.out.println(credentialRepository.findByIdAndUserId(18L,
-		// 11L).getUser().getEmail());
-
-		// -------- TEST FOR PASSWORD ENCRYPTION DECRYPTION --------
-		// PrivatePublicKeyPair ppkp = rsaKeyPairStore.getRSAKeyPair(1L);
-		// String locked = rsaKeyService.lock(ppkp.getPublicKey(), "data");
-		// String unlocked = rsaKeyService.unlock(ppkp.getPrivateKey(), locked);
-		// System.out.println("\n\n " + ppkp + "\n\n");
-		// System.out.println("\n\n ---------------");
-		// System.out.println("locked => " + locked);
-		// System.out.println("unlocked => " + unlocked);
-		// System.out.println("\n\n --------------- \n\n");
 	}
 }
 

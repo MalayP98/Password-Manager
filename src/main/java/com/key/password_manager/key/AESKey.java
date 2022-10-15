@@ -30,6 +30,11 @@ public class AESKey extends AbstarctKey {
         setSubKeyType(type);
     }
 
+    public AESKey(AESKey copyObject) {
+        this(copyObject.getKey(), copyObject.getSalt(), copyObject.getIv(),
+                copyObject.getSubKeyType());
+    }
+
     public String getSalt() {
         return salt;
     }
@@ -56,6 +61,10 @@ public class AESKey extends AbstarctKey {
 
     public boolean isEncryptionKey(AESKeyType subType) {
         return AESKeyType.ENCYPTION_KEY.equals(subType);
+    }
+
+    public AESKeyType getSubKeyType() {
+        return type;
     }
 
     public void setSubKeyType(AESKeyType subKeyType) {

@@ -1,17 +1,18 @@
 package com.key.password_manager.credential;
 
 import java.security.KeyException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.key.password_manager.encryption.Lock;
 import com.key.password_manager.encryption.RSAKeyPairStore;
 import com.key.password_manager.encryption.exceptions.DecryptionException;
-import com.key.password_manager.encryption.exceptions.EncryptionException;
 import com.key.password_manager.key.Key;
+import com.key.password_manager.key.KeyFactory;
 import com.key.password_manager.user.User;
 import com.key.password_manager.user.UserService;
 
@@ -31,7 +32,7 @@ public class CredentialService {
     private UserService userService;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private KeyFactory keyFactory;
 
     private final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
@@ -41,12 +42,12 @@ public class CredentialService {
             if (Objects.isNull(credentialOwner))
                 throw new NullPointerException("Credential owner not found.");
             credential.setUser(credentialOwner);
-            String unlockedPassword = decryptPassword(
-                    rsaKeyStore.getRSAKeyPair(userId).getPrivateKey(), lockedPassword);
-            credentialOwner.getPassword().setKey(unlockedPassword);
-            credential.setPassword(encryptCredential(credentialOwner.getPassword(),
-                    credentialOwner.getEncryptionKey(), credential.getPassword()));
-            credentialOwner.getPassword().setKey(passwordEncoder.encode(unlockedPassword));
+            Key unlockedPassword =
+                    getUnlockedPassword(rsaKeyStore.getRSAKeyPair(userId).getPrivateKey(),
+                            lockedPassword, credentialOwner.getPassword());
+            String lockedCredential = encryptCredential(unlockedPassword,
+                    keyFactory.clone(credentialOwner.getEncryptionKey()), credential.getPassword());
+            credential.setPassword(lockedCredential);
             credentialRepository.save(credential);
         } catch (Exception e) {
             LOG.error("Unable to save credential. Error message: {}", e.getMessage());
@@ -60,10 +61,12 @@ public class CredentialService {
         try {
             credential = credentialRepository.findByIdAndUserId(credentialId, userId);
             User credentialOwner = credential.getUser();
-            credentialOwner.getPassword().setKey(decryptPassword(
-                    rsaKeyStore.getRSAKeyPair(userId).getPrivateKey(), lockedPassword));
-            credential.setPassword(decryptCredential(credentialOwner.getPassword(),
-                    credentialOwner.getEncryptionKey(), credential.getPassword()));
+            Key unlockedPassword =
+                    getUnlockedPassword(rsaKeyStore.getRSAKeyPair(userId).getPrivateKey(),
+                            lockedPassword, credentialOwner.getPassword());
+            String unlockedCredential = decryptCredential(unlockedPassword,
+                    keyFactory.clone(credentialOwner.getEncryptionKey()), credential.getPassword());
+            credential.setPassword(unlockedCredential);
         } catch (Exception e) {
             LOG.error("Cannot get credential. Error message: {}", e.getMessage());
         }
@@ -72,22 +75,24 @@ public class CredentialService {
 
     private String encryptCredential(Key password, Key encryptionKey, String credential)
             throws DecryptionException, KeyException {
-        encryptionKey.setKey(lock.unlock(password, encryptionKey.getKey()));
-        String encryptedCredential = lock.lock(encryptionKey, credential);
-        encryptionKey.setKey(lock.lock(password, encryptionKey.getKey()));
-        return encryptedCredential;
+        List<Key> keys = new ArrayList<>();
+        keys.add(password);
+        keys.add(encryptionKey);
+        return lock.squentialLock(keys, credential);
     }
 
     private String decryptCredential(Key password, Key encryptionKey, String credential)
             throws DecryptionException, KeyException {
-        encryptionKey.setKey(lock.unlock(password, encryptionKey.getKey()));
-        String decryptedCredential = lock.unlock(encryptionKey, credential);
-        encryptionKey.setKey(lock.lock(password, encryptionKey.getKey()));
-        return lock.lock(password, decryptedCredential);
+        List<Key> keys = new ArrayList<>();
+        keys.add(password);
+        keys.add(encryptionKey);
+        return lock.lock(password, lock.squentialUnlock(keys, credential));
     }
 
-    private String decryptPassword(Key key, String password)
-            throws EncryptionException, KeyException, Exception {
-        return lock.unlock(key, password);
+    private Key getUnlockedPassword(Key rsaPrivateKey, String lockedPassword, Key password) {
+        String unlockedPassword = lock.unlock(rsaPrivateKey, lockedPassword);
+        Key clonedKey = keyFactory.clone(password);
+        clonedKey.setKey(unlockedPassword);
+        return clonedKey;
     }
 }

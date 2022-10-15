@@ -13,12 +13,20 @@ public class RSAKey extends AbstarctKey {
         setSubKeyType(type);
     }
 
+    public RSAKey(RSAKey copyObject) {
+        this(copyObject.getKey(), copyObject.getSubKeyType());
+    }
+
     public boolean isPrivateKey() {
         return RSAKeyType.PRIVATE.equals(type);
     }
 
     public boolean isPublicKey() {
         return RSAKeyType.PUBLIC.equals(type);
+    }
+
+    public RSAKeyType getSubKeyType() {
+        return type;
     }
 
     public void setSubKeyType(RSAKeyType type) {
