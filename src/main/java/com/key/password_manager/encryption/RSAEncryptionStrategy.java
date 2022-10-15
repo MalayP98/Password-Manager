@@ -21,7 +21,7 @@ public class RSAEncryptionStrategy implements EncryptionStrategy {
         try {
             Cipher encryptCipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             encryptCipher.init(Cipher.ENCRYPT_MODE,
-                    getKeyFromStringForRSA(publicKey.getKey(), RSAKeyType.PUBLIC));
+                    convertStringToKey(publicKey.getKey(), RSAKeyType.PUBLIC));
             return Helpers
                     .Base64encoder(encryptCipher.doFinal(data.getBytes(StandardCharsets.UTF_8)));
         } catch (Exception e) {
@@ -34,7 +34,7 @@ public class RSAEncryptionStrategy implements EncryptionStrategy {
         try {
             Cipher decryptCipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             decryptCipher.init(Cipher.DECRYPT_MODE,
-                    getKeyFromStringForRSA(privateKey.getKey(), RSAKeyType.PRIVATE));
+                    convertStringToKey(privateKey.getKey(), RSAKeyType.PRIVATE));
             return new String(decryptCipher.doFinal(Helpers.Base64decoder(data)),
                     StandardCharsets.UTF_8);
         } catch (Exception e) {
@@ -43,7 +43,7 @@ public class RSAEncryptionStrategy implements EncryptionStrategy {
         }
     }
 
-    private java.security.Key getKeyFromStringForRSA(String key, RSAKeyType type) throws Exception {
+    private java.security.Key convertStringToKey(String key, RSAKeyType type) throws Exception {
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         switch (type) {
             case PRIVATE:

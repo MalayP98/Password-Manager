@@ -29,7 +29,7 @@ public class AESEncryptionStrategy implements EncryptionStrategy {
     public String encrypt(Key key, String data) throws KeyException {
         try {
             AESKey aesKey = (AESKey) key;
-            return encrypt(getKeyFromStringForAES(aesKey.getKey(), aesKey.getSalt()),
+            return encrypt(convertStringToKey(aesKey.getKey(), aesKey.getSalt()),
                     convertStringToIv(aesKey.getIv()), data);
         } catch (Exception e) {
             throw new EncryptionException("Unable to encrypt data! " + e.getMessage());
@@ -40,7 +40,7 @@ public class AESEncryptionStrategy implements EncryptionStrategy {
     public String decrypt(Key key, String data) throws KeyException {
         try {
             AESKey aesKey = (AESKey) key;
-            return decrypt(getKeyFromStringForAES(aesKey.getKey(), aesKey.getSalt()),
+            return decrypt(convertStringToKey(aesKey.getKey(), aesKey.getSalt()),
                     convertStringToIv(aesKey.getIv()), data);
         } catch (Exception e) {
             throw new DecryptionException("Unable to decrypt data! " + e.getMessage());
@@ -65,7 +65,7 @@ public class AESEncryptionStrategy implements EncryptionStrategy {
         return new String(plainText);
     }
 
-    private SecretKey getKeyFromStringForAES(String key, String salt)
+    private SecretKey convertStringToKey(String key, String salt)
             throws InvalidKeySpecException, NoSuchAlgorithmException {
         SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
         KeySpec spec = new PBEKeySpec(key.toCharArray(), salt.getBytes(), 65536, 256);
