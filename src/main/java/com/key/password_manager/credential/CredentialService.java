@@ -7,6 +7,7 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import com.key.password_manager.encryption.Lock;
 import com.key.password_manager.encryption.RSAKeyPairStore;
@@ -42,14 +43,10 @@ public class CredentialService {
             if (Objects.isNull(credentialOwner))
                 throw new NullPointerException("Credential owner not found.");
             credential.setUser(credentialOwner);
-            Key unlockedPassword =
-                    getUnlockedPassword(rsaKeyStore.getRSAKeyPair(userId).getPrivateKey(),
-                            lockedPassword, credentialOwner.getPassword());
-            String lockedCredential = encryptCredential(unlockedPassword,
-                    keyFactory.clone(credentialOwner.getEncryptionKey()), credential.getPassword());
-            credential.setPassword(lockedCredential);
+            credential.setPassword(toggleCredentialLock(credential, userId, lockedPassword, true));
             credentialRepository.save(credential);
         } catch (Exception e) {
+            e.printStackTrace();
             LOG.error("Unable to save credential. Error message: {}", e.getMessage());
             return "Failed";
         }
@@ -60,17 +57,27 @@ public class CredentialService {
         Credential credential = null;
         try {
             credential = credentialRepository.findByIdAndUserId(credentialId, userId);
-            User credentialOwner = credential.getUser();
-            Key unlockedPassword =
-                    getUnlockedPassword(rsaKeyStore.getRSAKeyPair(userId).getPrivateKey(),
-                            lockedPassword, credentialOwner.getPassword());
-            String unlockedCredential = decryptCredential(unlockedPassword,
-                    keyFactory.clone(credentialOwner.getEncryptionKey()), credential.getPassword());
-            credential.setPassword(unlockedCredential);
+            credential.setPassword(toggleCredentialLock(credential, userId, lockedPassword, false));
         } catch (Exception e) {
             LOG.error("Cannot get credential. Error message: {}", e.getMessage());
         }
         return credential;
+    }
+
+    public List<Credential> retriveCredential(Integer from, Integer pageSize, Long userId,
+            String lockedPassword) {
+        List<Credential> credentials =
+                credentialRepository.findAllByUserId(userId, PageRequest.of(from, pageSize));
+        for (Credential credential : credentials) {
+            try {
+                credential.setPassword(
+                        toggleCredentialLock(credential, userId, lockedPassword, false));
+            } catch (Exception e) {
+                LOG.error("Unable to unlock credential with id " + credential.getId() + ". ",
+                        e.getMessage());
+            }
+        }
+        return credentials;
     }
 
     private String encryptCredential(Key password, Key encryptionKey, String credential)
@@ -94,5 +101,19 @@ public class CredentialService {
         Key clonedKey = keyFactory.clone(password);
         clonedKey.setKey(unlockedPassword);
         return clonedKey;
+    }
+
+    private String toggleCredentialLock(Credential credential, Long userId, String lockedPassword,
+            Boolean lock) throws Exception {
+        User credentialOwner = credential.getUser();
+        Key unlockedPassword =
+                getUnlockedPassword(rsaKeyStore.getRSAKeyPair(userId).getPrivateKey(),
+                        lockedPassword, credentialOwner.getPassword());
+        if (lock)
+            return encryptCredential(unlockedPassword,
+                    keyFactory.clone(credentialOwner.getEncryptionKey()), credential.getPassword());
+        else
+            return decryptCredential(unlockedPassword,
+                    keyFactory.clone(credentialOwner.getEncryptionKey()), credential.getPassword());
     }
 }

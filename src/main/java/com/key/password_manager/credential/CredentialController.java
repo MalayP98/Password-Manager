@@ -1,5 +1,7 @@
 package com.key.password_manager.credential;
 
+import java.util.List;
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,11 +28,21 @@ public class CredentialController {
                 credentialService.addCredential(credential, userId, password), HttpStatus.OK);
     }
 
-    @GetMapping
+    @GetMapping("/{userId}")
     public ResponseEntity<Credential> getCredentials(@RequestParam Long credentialId,
-            @RequestParam Long userId, @RequestParam(required = true) String password) {
+            @PathVariable Long userId, @RequestParam(required = true) String password) {
         return new ResponseEntity<Credential>(
                 credentialService.retriveCredential(userId, credentialId, password), HttpStatus.OK);
+    }
+
+    @GetMapping("/pages" + "/{userId}")
+    public ResponseEntity<List<Credential>> getCredentialsPage(@PathVariable Long userId,
+            @RequestParam(required = true) Integer from,
+            @RequestParam(required = true) Integer pageSize,
+            @RequestParam(required = true) String password) {
+        return new ResponseEntity<List<Credential>>(
+                credentialService.retriveCredential(from, pageSize, userId, password),
+                HttpStatus.OK);
     }
 
     @GetMapping("/metadata")

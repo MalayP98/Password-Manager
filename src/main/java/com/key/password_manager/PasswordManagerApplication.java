@@ -42,13 +42,18 @@ public class PasswordManagerApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
+		PrivatePublicKeyPair keyPair = rsaKeyPairStore.getRSAKeyPair(1L);
+		String lockedPassword = lock.lock(keyPair.getPublicKey(), "Malay@123");
+		System.out.println(
+				"\nLocked password for user 1 is : " + lockedPassword.replace("+", "%2B") + "\n");
+
 		// ------------ CRED LOCK ON REGISTER TEST ----------
-		// PrivatePublicKeyPair keyPair = rsaKeyPairStore.getRSAKeyPair(11L);
+		// PrivatePublicKeyPair keyPair = rsaKeyPairStore.getRSAKeyPair(1L);
 		// String lockedPassword = lock.lock(keyPair.getPublicKey(), "Malay@123");
 		// Credential credential = new Credential();
 		// credential.setPassword("password");
-		// credential.setId(67L);
-		// String status = credentialService.addCredential(credential, 11L, lockedPassword);
+		// // credential.setId(67L);
+		// String status = credentialService.addCredential(credential, 1L, lockedPassword);
 		// System.out.println("\n\n ----> " + status + "\n\n");
 
 		// ------------- RETRIVAL ------------------
