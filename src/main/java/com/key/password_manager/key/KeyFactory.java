@@ -4,16 +4,18 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import com.key.password_manager.key.types.AESKeyType;
 import com.key.password_manager.key.types.RSAKeyType;
+import com.key.password_manager.stringgenerators.passwordgenerators.PasswordGenerator;
 import com.key.password_manager.utils.Helpers;
-import com.key.password_manager.utils.PasswordGenerator;
 
 @Component
 public class KeyFactory {
 
     @Autowired
+    @Qualifier("defaultPasswordGenerator")
     private PasswordGenerator passwordGenerator;
 
     private Logger LOG = LoggerFactory.getLogger(KeyFactory.class);
@@ -21,7 +23,7 @@ public class KeyFactory {
     public Key createAESKey(String key, String salt, String iv, AESKeyType type) {
         if (Objects.isNull(key) || key.isEmpty()) {
             LOG.debug("Key is null or empty creating random key.");
-            key = passwordGenerator.generate();
+            key = passwordGenerator.generate(12);
         }
         if (Objects.isNull(salt) || salt.isEmpty()) {
             LOG.debug("Salt is null or empty creating random salt.");

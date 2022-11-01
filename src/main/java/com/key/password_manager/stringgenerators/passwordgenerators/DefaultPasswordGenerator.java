@@ -1,10 +1,10 @@
-package com.key.password_manager.utils;
+package com.key.password_manager.stringgenerators.passwordgenerators;
 
 import java.util.Random;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PasswordGenerator {
+public class DefaultPasswordGenerator implements PasswordGenerator {
 
     private final String UPPERCASE_ALPHABETS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -19,17 +19,16 @@ public class PasswordGenerator {
 
     private final Random RANDOM = new Random();
 
-    private final int PASSWORD_LENGTH = 12;
-
     private int[] getRandomIndices() {
         int passwordCharIdx = RANDOM.nextInt(4);
         return new int[] {passwordCharIdx,
                 RANDOM.nextInt(PASSWORD_CHARACTERS[passwordCharIdx].length())};
     }
 
-    public String generate() {
+    @Override
+    public String generate(int length) {
         StringBuilder passwordBuilder = new StringBuilder();
-        for (int i = 0; i < PASSWORD_LENGTH; i++) {
+        for (int i = 0; i < length; i++) {
             int[] indices = getRandomIndices();
             passwordBuilder.append(PASSWORD_CHARACTERS[indices[0]].charAt(indices[1]));
         }

@@ -11,9 +11,9 @@ import com.key.password_manager.encryption.exceptions.EncryptionException;
 import com.key.password_manager.keypair.KeyPairFactory;
 import com.key.password_manager.keypair.PasswordEncryptionKeyPair;
 import com.key.password_manager.security.JWTGenerator;
+import com.key.password_manager.stringgenerators.passwordgenerators.PasswordGenerator;
 import com.key.password_manager.user.User;
 import com.key.password_manager.user.UserService;
-import com.key.password_manager.utils.PasswordGenerator;
 
 @Service
 public class AuthenticationService {
@@ -38,7 +38,7 @@ public class AuthenticationService {
 
     public String registerUser(AuthenticationModel registrationData) throws Exception {
         if (Objects.isNull(registrationData.getPassword())) {
-            registrationData.setPassword(passwordGenerator.generate());
+            registrationData.setPassword(passwordGenerator.generate(12));
         }
         registrationVerification.isRegistrationValid(registrationData);
         userService.registerUser(
