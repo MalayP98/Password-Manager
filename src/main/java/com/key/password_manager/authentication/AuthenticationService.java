@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.key.password_manager.encryption.exceptions.EncryptionException;
 import com.key.password_manager.keypair.KeyPairFactory;
 import com.key.password_manager.keypair.PasswordEncryptionKeyPair;
+import com.key.password_manager.otpverification.OtpService;
 import com.key.password_manager.security.JWTGenerator;
 import com.key.password_manager.stringgenerators.passwordgenerators.PasswordGenerator;
 import com.key.password_manager.user.User;
@@ -36,14 +37,18 @@ public class AuthenticationService {
     @Autowired
     private PasswordGenerator passwordGenerator;
 
+    @Autowired
+    private OtpService otpService;
+
     public String registerUser(AuthenticationModel registrationData) throws Exception {
         if (Objects.isNull(registrationData.getPassword())) {
             registrationData.setPassword(passwordGenerator.generate(12));
         }
         registrationVerification.isRegistrationValid(registrationData);
-        userService.registerUser(
-                new User(registrationData.getEmail(), getKeyPair(registrationData.getPassword())));
-        return jwtGenerator.generate(registrationData.getEmail());
+        userService.registerUser(new User(registrationData.getEmail(),
+                getKeyPair(registrationData.getPassword()), false));
+        return otpService.sentOTP(registrationData.getEmail());
+        // return jwtGenerator.generate(registrationData.getEmail());
     }
 
     public String loginUser(AuthenticationModel authModel) throws Exception {
