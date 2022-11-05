@@ -4,14 +4,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.data.redis.core.RedisTemplate;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.key.password_manager.authentication.AuthenticationService;
-import com.key.password_manager.credential.Credential;
 import com.key.password_manager.credential.CredentialRepository;
 import com.key.password_manager.credential.CredentialService;
 import com.key.password_manager.encryption.Lock;
 import com.key.password_manager.encryption.RSAKeyPairStore;
 import com.key.password_manager.keypair.PrivatePublicKeyPair;
-import com.key.password_manager.user.User;
+import com.key.password_manager.otpverification.Otp;
+import com.key.password_manager.otpverification.OtpFactory;
+import com.key.password_manager.otpverification.OtpRepository;
 import com.key.password_manager.user.UserService;
 
 @SpringBootApplication
@@ -35,12 +39,19 @@ public class PasswordManagerApplication implements CommandLineRunner {
 	@Autowired
 	private CredentialRepository credentialRepository;
 
+	@Autowired
+	private OtpRepository otpRepository;
+
+	@Autowired
+	private OtpFactory otpFactory;
+
 	public static void main(String[] args) {
 		SpringApplication.run(PasswordManagerApplication.class, args);
 	}
 
 	@Override
 	public void run(String... args) throws Exception {
+
 
 		PrivatePublicKeyPair keyPair = rsaKeyPairStore.getRSAKeyPair(1L);
 		String lockedPassword = lock.lock(keyPair.getPublicKey(), "Malay@123");

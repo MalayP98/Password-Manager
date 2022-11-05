@@ -1,10 +1,13 @@
 package com.key.password_manager.otpverification;
 
 import java.util.Date;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
+import com.key.password_manager.stringgenerators.otpgenerator.OtpGenerator;
 import com.key.password_manager.stringgenerators.passwordgenerators.PasswordGenerator;
 
 @Component
@@ -15,8 +18,8 @@ public class OtpFactory {
      * later by implementing PassworGenerator interface.
      */
     @Autowired
-    @Qualifier("defaultPasswordGenerator")
-    private PasswordGenerator passwordGenerator;
+    @Qualifier("defaultOtpGenerator")
+    private OtpGenerator otpGenerator;
 
     @Value("${com.keys.otp.length}")
     private int OTP_LENGTH;
@@ -28,7 +31,7 @@ public class OtpFactory {
     private int EXPIRY_TIME;
 
     public Otp createOtp(String recipientEmail) {
-        Otp otp = new Otp(passwordGenerator.generate(OTP_LENGTH));
+        Otp otp = new Otp(otpGenerator.generate(OTP_LENGTH));
         otp.setUserEmail(recipientEmail);
         Date currentDate = new Date();
         otp.setCreationDate(currentDate);

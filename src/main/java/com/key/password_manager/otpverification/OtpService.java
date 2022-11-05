@@ -1,12 +1,14 @@
 package com.key.password_manager.otpverification;
 
-import java.time.Duration;
+import java.util.Date;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import com.key.password_manager.email.Email;
 import com.key.password_manager.email.EmailService;
+import com.key.password_manager.user.User;
+import com.key.password_manager.user.UserService;
 
 @Service
 public class OtpService {
@@ -26,7 +28,10 @@ public class OtpService {
     private EmailService emailService;
 
     @Autowired
-    private RedisTemplate<String, Otp> otpStore;
+    private OtpRepository otpRepository;
+
+    @Autowired
+    private UserService userService;
 
     public String sentOTP(String recipientEmail) {
         String message = "";
@@ -34,7 +39,7 @@ public class OtpService {
             Otp otp = otpFactory.createOtp(recipientEmail);
             emailService.sendHTMLMail(new Email(recipientEmail, SUBJECT,
                     String.format(OTP_MESSAGE, EXPIRY_TIME, otp.getOtp())));
-            storeOTP(otp);
+            otpRepository.save(otp);
             message = "Otp send successfully.";
         } catch (Exception e) {
             e.printStackTrace();
@@ -43,9 +48,17 @@ public class OtpService {
         return message;
     }
 
-    private void storeOTP(Otp otp) {
-        otpStore.opsForValue().set(otp.getOtp(), otp);
-        otpStore.expire(otp.getOtp(), Duration.between(otp.getCreationDate().toInstant(),
-                otp.getExpiryDate().toInstant()));
+    public String verifyOTP(String otp) {
+        String message = "";
+        Otp otp_ = otpRepository.findByOtp(otp);
+        if (Objects.isNull(otp_) || new Date().compareTo(otp_.getExpiryDate()) > 0) {
+            message = "No a valid OTP.";
+        } else {
+            message = "OTP verified. User enabled.";
+            User user = userService.getDisabledUser(otp_.getUserEmail());
+            user.setEnabled(true);
+            userService.registerUser(user);
+        }
+        return message;
     }
 }

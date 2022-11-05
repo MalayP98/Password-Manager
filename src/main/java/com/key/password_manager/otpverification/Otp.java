@@ -1,9 +1,17 @@
 package com.key.password_manager.otpverification;
 
+import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
-public class Otp {
+@Entity
+public class Otp implements Serializable {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String otp;
@@ -13,6 +21,9 @@ public class Otp {
     private Date creationDate;
 
     private Date expiryDate;
+
+    public Otp() {
+    }
 
     public Otp(String otp) {
         this.otp = otp;
@@ -57,4 +68,10 @@ public class Otp {
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
     }
+
+    // @Override
+    // public String toString() {
+    // return "Otp [id=" + id + ", otp=" + otp + ", userEmail=" + userEmail + ", creationDate="
+    // + creationDate + ", expiryDate=" + expiryDate + "]";
+    // }
 }

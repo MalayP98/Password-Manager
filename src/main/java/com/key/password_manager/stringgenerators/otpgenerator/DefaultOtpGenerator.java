@@ -1,10 +1,10 @@
-package com.key.password_manager.stringgenerators.passwordgenerators;
+package com.key.password_manager.stringgenerators.otpgenerator;
 
 import java.util.Random;
 import org.springframework.stereotype.Component;
 
-@Component
-public class DefaultPasswordGenerator implements PasswordGenerator {
+@Component("defaultOtpGenerator")
+public class DefaultOtpGenerator implements OtpGenerator {
 
     private final String UPPERCASE_ALPHABETS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -12,15 +12,13 @@ public class DefaultPasswordGenerator implements PasswordGenerator {
 
     private final String NUMERICS = "0123456789";
 
-    private final String SPECIAL_CHARACTERS = "!@#&()-{}:;_,?/*~$^<>";
-
     private final String[] PASSWORD_CHARACTERS =
-            {UPPERCASE_ALPHABETS, LOWERCASE_ALPHABETS, NUMERICS, SPECIAL_CHARACTERS};
+            {UPPERCASE_ALPHABETS, LOWERCASE_ALPHABETS, NUMERICS};
 
     private final Random RANDOM = new Random();
 
     private int[] getRandomIndices() {
-        int passwordCharIdx = RANDOM.nextInt(4);
+        int passwordCharIdx = RANDOM.nextInt(3);
         return new int[] {passwordCharIdx,
                 RANDOM.nextInt(PASSWORD_CHARACTERS[passwordCharIdx].length())};
     }

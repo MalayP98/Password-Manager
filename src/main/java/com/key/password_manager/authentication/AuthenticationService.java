@@ -48,7 +48,6 @@ public class AuthenticationService {
         userService.registerUser(new User(registrationData.getEmail(),
                 getKeyPair(registrationData.getPassword()), false));
         return otpService.sentOTP(registrationData.getEmail());
-        // return jwtGenerator.generate(registrationData.getEmail());
     }
 
     public String loginUser(AuthenticationModel authModel) throws Exception {
