@@ -68,10 +68,4 @@ public class Otp implements Serializable {
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
     }
-
-    // @Override
-    // public String toString() {
-    // return "Otp [id=" + id + ", otp=" + otp + ", userEmail=" + userEmail + ", creationDate="
-    // + creationDate + ", expiryDate=" + expiryDate + "]";
-    // }
 }
