@@ -34,6 +34,11 @@ public class User extends BaseModel {
 
     }
 
+    public User(String email, PasswordEncryptionKeyPair keyPair, boolean isEnabled) {
+        this(email, keyPair.getPassword(), keyPair.getEncryptionKey());
+        this.isEnabled = isEnabled;
+    }
+
     public User(String email, PasswordEncryptionKeyPair keyPair) {
         this(email, keyPair.getPassword(), keyPair.getEncryptionKey());
     }

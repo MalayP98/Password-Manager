@@ -29,6 +29,7 @@ public class RegistrationVerification {
 
     public void isRegistrationValid(AuthenticationModel registrationData) throws Exception {
         if (userAlreadyExists(registrationData.getEmail())) {
+            System.out.println("user already exist");
             throw new Exception(
                     "User with email " + registrationData.getEmail() + " already exists.");
         }

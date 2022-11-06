@@ -40,7 +40,15 @@ public class UserService implements UserDetailsService {
     }
 
     public User getUser(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    public User getEnabledUser(String email) {
         return userRepository.findUserByEmailAndIsEnabled(email, true);
+    }
+
+    public User getDisabledUser(String email) {
+        return userRepository.findUserByEmailAndIsEnabled(email, false);
     }
 
     public Key publicKeyForUser(Long userId) throws Exception {

@@ -51,6 +51,7 @@ public class Lock {
                     LOG.info("Unable to unlock data. No matching algorithm found.");
             }
         } catch (DecryptionException | KeyException e) {
+            e.printStackTrace();
             LOG.error("Somthing went wrong while unlocking data.", e.getMessage());
         }
         return null;
