@@ -14,87 +14,95 @@ import com.key.password_manager.utils.BaseModel;
 @Table(name = "users")
 public class User extends BaseModel {
 
-    private String username;
+	private String username;
 
-    private String email;
+	private String email;
 
-    private String phoneNumber;
+	private String phoneNumber;
 
-    private boolean isEnabled;
+	private boolean isEnabled;
 
-    @OneToOne(targetEntity = AESKey.class, cascade = CascadeType.ALL)
-    @JoinColumn(name = "password_id")
-    private Key password;
+	private boolean isRegistered;
 
-    @OneToOne(targetEntity = AESKey.class, cascade = CascadeType.ALL)
-    @JoinColumn(name = "enc_key_id")
-    private Key encryptionKey;
+	@OneToOne(targetEntity = AESKey.class, cascade = CascadeType.ALL)
+	@JoinColumn(name = "password_id")
+	private Key password;
 
-    public User() {
+	@OneToOne(targetEntity = AESKey.class, cascade = CascadeType.ALL)
+	@JoinColumn(name = "enc_key_id")
+	private Key encryptionKey;
 
-    }
+	public User() {
 
-    public User(String email, PasswordEncryptionKeyPair keyPair, boolean isEnabled) {
-        this(email, keyPair.getPassword(), keyPair.getEncryptionKey());
-        this.isEnabled = isEnabled;
-    }
+	}
 
-    public User(String email, PasswordEncryptionKeyPair keyPair) {
-        this(email, keyPair.getPassword(), keyPair.getEncryptionKey());
-    }
+	public User(String email, PasswordEncryptionKeyPair keyPair, boolean isEnabled,
+			boolean isRegistered) {
+		this(email, keyPair.getPassword(), keyPair.getEncryptionKey());
+		this.isEnabled = isEnabled;
+		this.isRegistered = isRegistered;
+	}
 
-    public User(String email, Key password, Key encryptionKey) {
-        this.email = email;
-        this.password = password;
-        this.encryptionKey = encryptionKey;
-        this.isEnabled = true;
-    }
+	public User(String email, PasswordEncryptionKeyPair keyPair) {
+		this(email, keyPair.getPassword(), keyPair.getEncryptionKey());
+	}
 
-    public String getUsername() {
-        return username;
-    }
+	public User(String email, Key password, Key encryptionKey) {
+		this.email = email;
+		this.password = password;
+		this.encryptionKey = encryptionKey;
+		this.isEnabled = true;
+	}
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+	public String getUsername() {
+		return username;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
 
-    public boolean isEnabled() {
-        return isEnabled;
-    }
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
 
-    public void setEnabled(boolean isEnabled) {
-        this.isEnabled = isEnabled;
-    }
+	public boolean isEnabled() {
+		return isEnabled;
+	}
 
-    public Key getPassword() {
-        return password;
-    }
+	public void setEnabled(boolean isEnabled) {
+		this.isEnabled = isEnabled;
+	}
 
-    public void setPassword(Key password) {
-        this.password = password;
-    }
+	public Key getPassword() {
+		return password;
+	}
 
-    public Key getEncryptionKey() {
-        return encryptionKey;
-    }
+	public void setPassword(Key password) {
+		this.password = password;
+	}
 
-    public void setEncryptionKey(Key encryptionKey) {
-        this.encryptionKey = encryptionKey;
-    }
+	public Key getEncryptionKey() {
+		return encryptionKey;
+	}
+
+	public void setEncryptionKey(Key encryptionKey) {
+		this.encryptionKey = encryptionKey;
+	}
+
+	public boolean isRegistered() {
+		return isRegistered;
+	}
 }

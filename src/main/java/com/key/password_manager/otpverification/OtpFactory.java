@@ -13,29 +13,35 @@ import com.key.password_manager.stringgenerators.passwordgenerators.PasswordGene
 @Component
 public class OtpFactory {
 
-    /**
-     * Current PasswordGenerator is being used to create OTP. Any other implementation can be used
-     * later by implementing PassworGenerator interface.
-     */
-    @Autowired
-    @Qualifier("defaultOtpGenerator")
-    private OtpGenerator otpGenerator;
+	/**
+	 * Current PasswordGenerator is being used to create OTP. Any other implementation can be used
+	 * later by implementing PassworGenerator interface.
+	 */
+	@Autowired
+	@Qualifier("defaultOtpGenerator")
+	private OtpGenerator otpGenerator;
 
-    @Value("${com.keys.otp.length}")
-    private int OTP_LENGTH;
+	@Value("${com.keys.otp.length}")
+	private int OTP_LENGTH;
 
-    @Value("${com.keys.otp.refid.length}")
-    private int OTP_REF_ID_LENGTH;
+	@Value("${com.keys.otp.refid.length}")
+	private int OTP_REF_ID_LENGTH;
 
-    @Value("${com.keys.otp.expiry}")
-    private int EXPIRY_TIME;
+	@Value("${com.keys.otp.expiry}")
+	private int EXPIRY_TIME;
 
-    public Otp createOtp(String recipientEmail) {
-        Otp otp = new Otp(otpGenerator.generate(OTP_LENGTH));
-        otp.setUserEmail(recipientEmail);
-        Date currentDate = new Date();
-        otp.setCreationDate(currentDate);
-        otp.setExpiryDate(Date.from(currentDate.toInstant().plusSeconds(60 * EXPIRY_TIME)));
-        return otp;
-    }
+	public Otp createOtp(String recipientEmail) {
+		Otp otp = new Otp(otpGenerator.generate(OTP_LENGTH));
+		otp.setUserEmail(recipientEmail);
+		Date currentDate = new Date();
+		otp.setCreationDate(currentDate);
+		otp.setExpiryDate(Date.from(currentDate.toInstant().plusSeconds(60 * EXPIRY_TIME)));
+		return otp;
+	}
+
+	public Otp refresh(Otp otp) {
+		Otp refreshedOtp = createOtp(otp.getUserEmail());
+		refreshedOtp.setId(otp.getId());
+		return refreshedOtp;
+	}
 }
