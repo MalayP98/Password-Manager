@@ -20,100 +20,111 @@ import com.key.password_manager.user.UserService;
 @Service
 public class CredentialService {
 
-    @Autowired
-    private CredentialRepository credentialRepository;
+	@Autowired
+	private CredentialRepository credentialRepository;
 
-    @Autowired
-    private Lock lock;
+	@Autowired
+	private Lock lock;
 
-    @Autowired
-    private RSAKeyPairStore rsaKeyStore;
+	@Autowired
+	private RSAKeyPairStore rsaKeyStore;
 
-    @Autowired
-    private UserService userService;
+	@Autowired
+	private UserService userService;
 
-    @Autowired
-    private KeyFactory keyFactory;
+	@Autowired
+	private KeyFactory keyFactory;
 
-    private final Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
-    public String addCredential(Credential credential, Long userId, String lockedPassword) {
-        try {
-            User credentialOwner = userService.getUser(userId);
-            if (Objects.isNull(credentialOwner))
-                throw new NullPointerException("Credential owner not found.");
-            credential.setUser(credentialOwner);
-            credential.setPassword(toggleCredentialLock(credential, userId, lockedPassword, true));
-            credentialRepository.save(credential);
-        } catch (Exception e) {
-            e.printStackTrace();
-            LOG.error("Unable to save credential. Error message: {}", e.getMessage());
-            return "Failed";
-        }
-        return "Success";
-    }
+	/**
+	 * Credential owner is fetched using the @param userId. Credential owner is set as the owner in
+	 * the @param credential. Now the password in @param credential is locked. Finally the
+	 * credential is saved in to database and {@code Success} status is returned or if any exception
+	 * ouccered a {@code Failed} message is returned.
+	 * 
+	 * @param credential     : suppiled credential to added.
+	 * @param userId         : credential added to this user id.
+	 * @param lockedPassword : RSA locked password.
+	 * @return : status of the method.
+	 */
+	public String addCredential(Credential credential, Long userId, String lockedPassword) {
+		try {
+			User credentialOwner = userService.getUser(userId);
+			if (Objects.isNull(credentialOwner))
+				throw new NullPointerException("Credential owner not found.");
+			credential.setUser(credentialOwner);
+			credential.setPassword(toggleCredentialLock(credential, userId, lockedPassword, true));
+			credentialRepository.save(credential);
+		} catch (Exception e) {
+			e.printStackTrace();
+			LOG.error("Unable to save credential. Error message: {}", e.getMessage());
+			return "Failed";
+		}
+		return "Success";
+	}
 
-    public Credential retriveCredential(Long userId, Long credentialId, String lockedPassword) {
-        Credential credential = null;
-        try {
-            credential = credentialRepository.findByIdAndUserId(credentialId, userId);
-            credential.setPassword(toggleCredentialLock(credential, userId, lockedPassword, false));
-        } catch (Exception e) {
-            LOG.error("Cannot get credential. Error message: {}", e.getMessage());
-        }
-        return credential;
-    }
+	public Credential retriveCredential(Long userId, Long credentialId, String lockedPassword) {
+		Credential credential = null;
+		try {
+			credential = credentialRepository.findByIdAndUserId(credentialId, userId);
+			credential.setPassword(toggleCredentialLock(credential, userId, lockedPassword, false));
+		} catch (Exception e) {
+			LOG.error("Cannot get credential. Error message: {}", e.getMessage());
+		}
+		return credential;
+	}
 
-    public List<Credential> retriveCredential(Integer from, Integer pageSize, Long userId,
-            String lockedPassword) {
-        List<Credential> credentials =
-                credentialRepository.findAllByUserId(userId, PageRequest.of(from, pageSize));
-        for (Credential credential : credentials) {
-            try {
-                credential.setPassword(
-                        toggleCredentialLock(credential, userId, lockedPassword, false));
-            } catch (Exception e) {
-                LOG.error("Unable to unlock credential with id " + credential.getId() + ". ",
-                        e.getMessage());
-            }
-        }
-        return credentials;
-    }
+	public List<Credential> retriveCredential(Integer from, Integer pageSize, Long userId,
+			String lockedPassword) {
+		List<Credential> credentials =
+				credentialRepository.findAllByUserId(userId, PageRequest.of(from, pageSize));
+		for (Credential credential : credentials) {
+			try {
+				credential.setPassword(
+						toggleCredentialLock(credential, userId, lockedPassword, false));
+			} catch (Exception e) {
+				LOG.error("Unable to unlock credential with id " + credential.getId() + ". ",
+						e.getMessage());
+			}
+		}
+		return credentials;
+	}
 
-    private String encryptCredential(Key password, Key encryptionKey, String credential)
-            throws DecryptionException, KeyException {
-        List<Key> keys = new ArrayList<>();
-        keys.add(password);
-        keys.add(encryptionKey);
-        return lock.squentialLock(keys, credential);
-    }
+	private String encryptCredential(Key password, Key encryptionKey, String credential)
+			throws DecryptionException, KeyException {
+		List<Key> keys = new ArrayList<>();
+		keys.add(password);
+		keys.add(encryptionKey);
+		return lock.squentialLock(keys, credential);
+	}
 
-    private String decryptCredential(Key password, Key encryptionKey, String credential)
-            throws DecryptionException, KeyException {
-        List<Key> keys = new ArrayList<>();
-        keys.add(password);
-        keys.add(encryptionKey);
-        return lock.lock(password, lock.squentialUnlock(keys, credential));
-    }
+	private String decryptCredential(Key password, Key encryptionKey, String credential)
+			throws DecryptionException, KeyException {
+		List<Key> keys = new ArrayList<>();
+		keys.add(password);
+		keys.add(encryptionKey);
+		return lock.lock(password, lock.squentialUnlock(keys, credential));
+	}
 
-    private Key getUnlockedPassword(Key rsaPrivateKey, String lockedPassword, Key password) {
-        String unlockedPassword = lock.unlock(rsaPrivateKey, lockedPassword);
-        Key clonedKey = keyFactory.clone(password);
-        clonedKey.setKey(unlockedPassword);
-        return clonedKey;
-    }
+	private Key getUnlockedPassword(Key rsaPrivateKey, String lockedPassword, Key password) {
+		String unlockedPassword = lock.unlock(rsaPrivateKey, lockedPassword);
+		Key clonedKey = keyFactory.clone(password);
+		clonedKey.setKey(unlockedPassword);
+		return clonedKey;
+	}
 
-    private String toggleCredentialLock(Credential credential, Long userId, String lockedPassword,
-            Boolean lock) throws Exception {
-        User credentialOwner = credential.getUser();
-        Key unlockedPassword =
-                getUnlockedPassword(rsaKeyStore.getRSAKeyPair(userId).getPrivateKey(),
-                        lockedPassword, credentialOwner.getPassword());
-        if (lock)
-            return encryptCredential(unlockedPassword,
-                    keyFactory.clone(credentialOwner.getEncryptionKey()), credential.getPassword());
-        else
-            return decryptCredential(unlockedPassword,
-                    keyFactory.clone(credentialOwner.getEncryptionKey()), credential.getPassword());
-    }
+	private String toggleCredentialLock(Credential credential, Long userId, String lockedPassword,
+			Boolean lock) throws Exception {
+		User credentialOwner = credential.getUser();
+		Key unlockedPassword =
+				getUnlockedPassword(rsaKeyStore.getRSAKeyPair(userId).getPrivateKey(),
+						lockedPassword, credentialOwner.getPassword());
+		if (lock)
+			return encryptCredential(unlockedPassword,
+					keyFactory.clone(credentialOwner.getEncryptionKey()), credential.getPassword());
+		else
+			return decryptCredential(unlockedPassword,
+					keyFactory.clone(credentialOwner.getEncryptionKey()), credential.getPassword());
+	}
 }

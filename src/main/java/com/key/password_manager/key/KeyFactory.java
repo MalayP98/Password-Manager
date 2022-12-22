@@ -14,59 +14,59 @@ import com.key.password_manager.utils.Helpers;
 @Component
 public class KeyFactory {
 
-    @Autowired
-    @Qualifier("defaultPasswordGenerator")
-    private PasswordGenerator passwordGenerator;
+	@Autowired
+	@Qualifier("defaultPasswordGenerator")
+	private PasswordGenerator passwordGenerator;
 
-    private Logger LOG = LoggerFactory.getLogger(KeyFactory.class);
+	private Logger LOG = LoggerFactory.getLogger(KeyFactory.class);
 
-    public Key createAESKey(String key, String salt, String iv, AESKeyType type) {
-        if (Objects.isNull(key) || key.isEmpty()) {
-            LOG.debug("Key is null or empty creating random key.");
-            key = passwordGenerator.generate(12);
-        }
-        if (Objects.isNull(salt) || salt.isEmpty()) {
-            LOG.debug("Salt is null or empty creating random salt.");
-            salt = Helpers.randomString();
-        }
-        if (Objects.isNull(iv) || iv.isEmpty()) {
-            LOG.debug("IV is null or empty creating random IV.");
-            iv = Helpers.NByteString(16);
-        }
-        if (Objects.isNull(type)) {
-            type = AESKeyType.PASSWORD;
-        }
-        return new AESKey(key, salt, iv, type);
-    }
+	public Key createAESKey(String key, String salt, String iv, AESKeyType type) {
+		if (Objects.isNull(key) || key.isEmpty()) {
+			LOG.debug("Key is null or empty, creating random key.");
+			key = passwordGenerator.generate(12);
+		}
+		if (Objects.isNull(salt) || salt.isEmpty()) {
+			LOG.debug("Salt is null or empty, creating random salt.");
+			salt = Helpers.randomString();
+		}
+		if (Objects.isNull(iv) || iv.isEmpty()) {
+			LOG.debug("IV is null or empty, creating random IV.");
+			iv = Helpers.NByteString(16);
+		}
+		if (Objects.isNull(type)) {
+			type = AESKeyType.PASSWORD;
+		}
+		return new AESKey(key, salt, iv, type);
+	}
 
-    public Key createPassword(String password) {
-        return createAESKey(password, null, null, AESKeyType.PASSWORD);
-    }
+	public Key createPassword(String password) {
+		return createAESKey(password, null, null, AESKeyType.PASSWORD);
+	}
 
-    public Key createEncryptionKey(String encryptionKey) {
-        return createAESKey(encryptionKey, null, null, AESKeyType.ENCYPTION_KEY);
-    }
+	public Key createEncryptionKey(String encryptionKey) {
+		return createAESKey(encryptionKey, null, null, AESKeyType.ENCYPTION_KEY);
+	}
 
-    public Key createRSAKey(String key, RSAKeyType subKeyType) {
-        if (Objects.isNull(key) || Objects.isNull(subKeyType)) {
-            throw new NullPointerException("RSA key or Key type is null. Cannot create object.");
-        }
-        return new RSAKey(key, subKeyType);
-    }
+	public Key createRSAKey(String key, RSAKeyType subKeyType) {
+		if (Objects.isNull(key) || Objects.isNull(subKeyType)) {
+			throw new NullPointerException("RSA key or Key type is null. Cannot create object.");
+		}
+		return new RSAKey(key, subKeyType);
+	}
 
-    public Key createRSAKey(java.security.Key key, RSAKeyType subKeyType) {
-        return createRSAKey(Helpers.keyToString(key), subKeyType);
-    }
+	public Key createRSAKey(java.security.Key key, RSAKeyType subKeyType) {
+		return createRSAKey(Helpers.keyToString(key), subKeyType);
+	}
 
-    public Key clone(Key key) {
-        switch (key.type()) {
-            case AES:
-                return new AESKey((AESKey) key);
-            case RSA:
-                return new RSAKey((RSAKey) key);
-            default:
-                break;
-        }
-        return null;
-    }
+	public Key clone(Key key) {
+		switch (key.type()) {
+			case AES:
+				return new AESKey((AESKey) key);
+			case RSA:
+				return new RSAKey((RSAKey) key);
+			default:
+				break;
+		}
+		return null;
+	}
 }
