@@ -25,11 +25,11 @@ public class User extends BaseModel {
 	private boolean isRegistered;
 
 	@OneToOne(targetEntity = AESKey.class, cascade = CascadeType.ALL)
-	@JoinColumn(name = "password_id")
+	@JoinColumn(name = "password_id", updatable = false)
 	private Key password;
 
 	@OneToOne(targetEntity = AESKey.class, cascade = CascadeType.ALL)
-	@JoinColumn(name = "enc_key_id")
+	@JoinColumn(name = "enc_key_id", updatable = false)
 	private Key encryptionKey;
 
 	public User() {

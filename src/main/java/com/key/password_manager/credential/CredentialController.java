@@ -40,7 +40,7 @@ public class CredentialController {
 			@RequestParam(required = true) Integer pageSize,
 			@RequestParam(required = true) String password) {
 		return new ResponseEntity<List<Credential>>(
-				credentialService.retriveCredential(from, pageSize, userId, password),
+				credentialService.retriveCredentials(from, pageSize, userId, password),
 				HttpStatus.OK);
 	}
 
