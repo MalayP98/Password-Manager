@@ -37,7 +37,7 @@ public class CredentialService {
 				throw new NullPointerException("Credential owner not found.");
 			credential.setPassword(
 					credentialLock.lock(credentialOwner, lockedPassword, credential.getPassword()));
-			credential.setUser(credentialOwner);
+			credential.setOwner(credentialOwner);
 			credentialRepository.save(credential);
 		} catch (Exception e) {
 			LOG.error("Unable to save credential. Error message: {}", e.getMessage());
@@ -50,7 +50,7 @@ public class CredentialService {
 		Credential credential = null;
 		try {
 			credential = credentialRepository.findByIdAndUserId(credentialId, userId);
-			credential.setPassword(credentialLock.unlock(credential.getUser(), lockedPassword,
+			credential.setPassword(credentialLock.unlock(credential.getOwner(), lockedPassword,
 					credential.getPassword()));
 		} catch (Exception e) {
 			LOG.error("Cannot get credential. Error message: {}", e.getMessage());
@@ -64,7 +64,7 @@ public class CredentialService {
 				credentialRepository.findAllByUserId(userId, PageRequest.of(from, pageSize));
 		for (Credential credential : credentials) {
 			try {
-				credential.setPassword(credentialLock.unlock(credential.getUser(), lockedPassword,
+				credential.setPassword(credentialLock.unlock(credential.getOwner(), lockedPassword,
 						credential.getPassword()));
 			} catch (Exception e) {
 				LOG.error("Unable to unlock credential with id " + credential.getId() + ". ",

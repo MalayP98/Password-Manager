@@ -12,57 +12,57 @@ import com.key.password_manager.utils.BaseModel;
 @Entity
 public class Credential extends BaseModel {
 
-    private String username;
+	private String username;
 
-    private String email;
+	private String email;
 
-    private String password;
+	private String password;
 
-    private String associatedPhoneNumber;
+	private String associatedPhoneNumber;
 
-    @ManyToOne(targetEntity = User.class, cascade = CascadeType.ALL)
-    @JoinTable(name = "user_cred", joinColumns = @JoinColumn(name = "cred_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id"))
-    @JsonIgnore
-    private User user;
+	@ManyToOne(targetEntity = User.class, cascade = CascadeType.ALL)
+	@JoinTable(name = "user_cred", joinColumns = @JoinColumn(name = "cred_id"),
+			inverseJoinColumns = @JoinColumn(name = "user_id"))
+	@JsonIgnore
+	private User owner;
 
-    public String getUsername() {
-        return username;
-    }
+	public String getUsername() {
+		return username;
+	}
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public String getPassword() {
+		return password;
+	}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
-    public String getAssociatedPhoneNumber() {
-        return associatedPhoneNumber;
-    }
+	public String getAssociatedPhoneNumber() {
+		return associatedPhoneNumber;
+	}
 
-    public void setAssociatedPhoneNumber(String associatedPhoneNumber) {
-        this.associatedPhoneNumber = associatedPhoneNumber;
-    }
+	public void setAssociatedPhoneNumber(String associatedPhoneNumber) {
+		this.associatedPhoneNumber = associatedPhoneNumber;
+	}
 
-    public User getUser() {
-        return user;
-    }
+	public User getOwner() {
+		return owner;
+	}
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+	public void setOwner(User owner) {
+		this.owner = owner;
+	}
 }
