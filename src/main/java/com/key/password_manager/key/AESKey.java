@@ -75,9 +75,4 @@ public class AESKey extends AbstractKey {
 			throw new NullPointerException("Key type is not supplied while creating AES Key");
 		this.type = subKeyType;
 	}
-
-	@Override
-	public Object clone() throws CloneNotSupportedException {
-		return super.clone();
-	}
 }

@@ -47,13 +47,4 @@ public abstract class AbstractKey extends BaseModel implements Key {
 		}
 		this.keyType = keyType;
 	}
-
-	public Object clone() throws CloneNotSupportedException {
-		return super.clone();
-	}
-
-	public Key updateKey(String key) {
-		setKey(key);
-		return this;
-	}
 }

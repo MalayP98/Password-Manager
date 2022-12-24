@@ -9,8 +9,4 @@ public interface Key extends Cloneable {
 	public void setKey(String key);
 
 	public KeyType type();
-
-	public Key updateKey(String key);
-
-	public abstract Object clone() throws CloneNotSupportedException;
 }
