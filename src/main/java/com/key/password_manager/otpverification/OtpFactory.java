@@ -1,25 +1,18 @@
 package com.key.password_manager.otpverification;
 
 import java.util.Date;
-import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
-import com.key.password_manager.stringgenerators.otpgenerator.OtpGenerator;
-import com.key.password_manager.stringgenerators.passwordgenerators.PasswordGenerator;
+import com.key.password_manager.stringgenerators.RandomStringGenerator;
 
 @Component
 public class OtpFactory {
 
-	/**
-	 * Current PasswordGenerator is being used to create OTP. Any other implementation can be used
-	 * later by implementing PassworGenerator interface.
-	 */
 	@Autowired
-	@Qualifier("defaultOtpGenerator")
-	private OtpGenerator otpGenerator;
+	@Qualifier("otpGenerator")
+	private RandomStringGenerator otpGenerator;
 
 	@Value("${com.keys.otp.length}")
 	private int OTP_LENGTH;
