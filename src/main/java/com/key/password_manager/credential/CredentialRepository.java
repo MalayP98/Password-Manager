@@ -6,9 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CredentialRepository extends JpaRepository<Credential, Long> {
 
-    public List<Credential> findByUserId(Long userId);
+	public List<Credential> findByOwnerId(Long ownerId);
 
-    public Credential findByIdAndUserId(Long credentialId, Long userId);
+	public Credential findByIdAndOwnerId(Long credentialId, Long ownerId);
 
-    public List<Credential> findAllByUserId(Long userId, Pageable pageable);
+	public List<Credential> findAllByOwnerId(Long ownerId, Pageable pageable);
 }

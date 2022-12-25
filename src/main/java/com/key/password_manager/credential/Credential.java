@@ -22,7 +22,7 @@ public class Credential extends BaseModel {
 
 	@ManyToOne(targetEntity = User.class, cascade = CascadeType.ALL)
 	@JoinTable(name = "user_cred", joinColumns = @JoinColumn(name = "cred_id"),
-			inverseJoinColumns = @JoinColumn(name = "user_id"))
+			inverseJoinColumns = @JoinColumn(name = "owner_id"))
 	@JsonIgnore
 	private User owner;
 
