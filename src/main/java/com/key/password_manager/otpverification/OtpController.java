@@ -18,7 +18,7 @@ import com.key.password_manager.otpverification.otpservices.OtpService;
 public class OtpController {
 
 	@Autowired
-	@Qualifier("nodatabaseOTPService")
+	@Qualifier("databaseOTPService")
 	private OtpService otpService;
 
 	@GetMapping("/generate")

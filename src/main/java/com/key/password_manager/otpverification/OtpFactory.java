@@ -23,9 +23,6 @@ public class OtpFactory {
 	@Value("${com.keys.otp.length}")
 	private int OTP_LENGTH;
 
-	@Value("${com.keys.otp.refid.length}")
-	private int OTP_REF_ID_LENGTH;
-
 	@Value("${com.keys.otp.expiry}")
 	private int EXPIRY_TIME;
 
