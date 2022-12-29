@@ -25,7 +25,11 @@ public class RandomStringGenerator {
 		return stringBuilder.toString();
 	}
 
-	public void setCharacterSets(List<String> characterSets) {
-		this.characterSets = characterSets;
+	public void addCharacterSet(String characterSet) {
+		this.characterSets.add(characterSet);
+	}
+
+	public int characterSetSize() {
+		return characterSets.size();
 	}
 }

@@ -34,7 +34,7 @@ public class KeyFactory {
 			iv = Helpers.NByteString(16);
 		}
 		if (Objects.isNull(type)) {
-			type = AESKeyType.PASSWORD;
+			type = AESKeyType.NONE;
 		}
 		return new AESKey(key, salt, iv, type);
 	}

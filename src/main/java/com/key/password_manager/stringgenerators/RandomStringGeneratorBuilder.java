@@ -1,23 +1,22 @@
 package com.key.password_manager.stringgenerators;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.springframework.stereotype.Component;
-
-@Component
 public class RandomStringGeneratorBuilder {
 
-	private List<String> characterSets = new ArrayList<>();
+	private RandomStringGenerator randomStringGenerator;
+
+	public RandomStringGeneratorBuilder() {
+		this.randomStringGenerator = new RandomStringGenerator();
+	}
 
 	public RandomStringGeneratorBuilder add(String characterSet) {
-		characterSets.add(characterSet);
+		this.randomStringGenerator.addCharacterSet(characterSet);
 		return this;
 	}
 
-	public RandomStringGenerator build() {
-		RandomStringGenerator randomStringGenerator = new RandomStringGenerator();
-		randomStringGenerator.setCharacterSets(characterSets);
-		characterSets.clear();
-		return randomStringGenerator;
+	public RandomStringGenerator build() throws Exception {
+		if (this.randomStringGenerator.characterSetSize() == 0)
+			throw new Exception("Cannot build " + RandomStringGenerator.class.getName()
+					+ " with empty character set.");
+		return this.randomStringGenerator;
 	}
 }

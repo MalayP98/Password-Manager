@@ -1,7 +1,8 @@
 package com.key.password_manager.key;
 
 import java.util.Objects;
-import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.MappedSuperclass;
 import com.key.password_manager.key.types.KeyType;
 import com.key.password_manager.utils.BaseModel;
@@ -11,7 +12,7 @@ public abstract class AbstractKey extends BaseModel implements Key {
 
 	private String key;
 
-	@Column(updatable = false)
+	@Enumerated(EnumType.STRING)
 	private KeyType keyType;
 
 	public AbstractKey() {

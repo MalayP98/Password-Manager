@@ -12,7 +12,7 @@ import com.key.password_manager.GlobalConstants;
 import com.key.password_manager.encryption.exceptions.EncryptionException;
 import com.key.password_manager.keypair.KeyPairFactory;
 import com.key.password_manager.keypair.PasswordEncryptionKeyPair;
-import com.key.password_manager.otpverification.OtpService;
+import com.key.password_manager.otpverification.otpservices.DatabaseOtpService;
 import com.key.password_manager.security.JWTGenerator;
 import com.key.password_manager.user.User;
 import com.key.password_manager.user.UserService;
@@ -32,9 +32,6 @@ public class AuthenticationService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
-	@Autowired
-	private OtpService otpService;
-
 	/**
 	 * Checks if user has a strong password or not. If the password is weak user is not registered.
 	 * If the password is strong, we check if the user is already registered or not(if user is
@@ -51,8 +48,7 @@ public class AuthenticationService {
 			user = userService.registerUser(new User(registrationData.getEmail(),
 					getKeyPair(registrationData.getPassword()), false, true));
 		}
-		return user.isEnabled() ? "User alreay registered."
-				: otpService.sentOTP(registrationData.getEmail());
+		return "User registered. To verfiy the user generate an OTP here : POST /otp/generate/.";
 	}
 
 	/**
