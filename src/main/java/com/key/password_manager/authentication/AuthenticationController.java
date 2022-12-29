@@ -6,36 +6,37 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.key.password_manager.otpverification.OtpService;
+import com.key.password_manager.otpverification.Otp;
+import com.key.password_manager.otpverification.otpservices.DatabaseOtpService;
 
 @RestController
 @RequestMapping("/authentication")
 public class AuthenticationController {
 
-    @Autowired
-    private AuthenticationService authenticationService;
+	@Autowired
+	private AuthenticationService authenticationService;
 
-    @Autowired
-    private OtpService otpService;
+	@Autowired
+	private DatabaseOtpService otpService;
 
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody AuthenticationModel authenticationData)
-            throws Exception {
-        return new ResponseEntity<String>(authenticationService.loginUser(authenticationData),
-                HttpStatus.OK);
-    }
+	@PostMapping("/login")
+	public ResponseEntity<String> login(@RequestBody AuthenticationModel authenticationData)
+			throws Exception {
+		return new ResponseEntity<String>(authenticationService.loginUser(authenticationData),
+				HttpStatus.OK);
+	}
 
-    @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody AuthenticationModel registrationData)
-            throws Exception {
-        return new ResponseEntity<String>(authenticationService.registerUser(registrationData),
-                HttpStatus.CREATED);
-    }
+	@PostMapping("/register")
+	public ResponseEntity<?> register(@RequestBody AuthenticationModel registrationData)
+			throws Exception {
+		return new ResponseEntity<String>(authenticationService.registerUser(registrationData),
+				HttpStatus.CREATED);
+	}
 
-    @PostMapping("/verify" + "/otp")
-    public ResponseEntity<String> verifyOTP(@RequestParam String otp) {
-        return new ResponseEntity<String>(otpService.verifyOTP(otp), HttpStatus.OK);
-    }
+	@PostMapping("/verify" + "/otp")
+	public ResponseEntity<String> verifyOTP(@RequestBody Otp otp) {
+		return new ResponseEntity<String>(otpService.verifyOTP(otp) ? "User successfully validated."
+				: "Unable to verfiy user. Try again!", HttpStatus.OK);
+	}
 }

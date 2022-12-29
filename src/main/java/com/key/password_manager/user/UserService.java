@@ -1,6 +1,5 @@
 package com.key.password_manager.user;
 
-import java.security.DrbgParameters.Reseed;
 import java.util.ArrayList;
 import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +37,15 @@ public class UserService implements UserDetailsService {
 		if (Objects.isNull(user))
 			throw new NullPointerException("No user found with id:" + userId);
 		return user;
+	}
+
+	public boolean enableUserWithEmail(String email) {
+		User user = getUserWithEnableStatus(email, false);
+		if (Objects.isNull(user))
+			return false;
+		user.setEnabled(true);
+		registerUser(user);
+		return true;
 	}
 
 	public User getUser(String email) {

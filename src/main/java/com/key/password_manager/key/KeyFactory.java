@@ -8,15 +8,15 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import com.key.password_manager.key.types.AESKeyType;
 import com.key.password_manager.key.types.RSAKeyType;
-import com.key.password_manager.stringgenerators.passwordgenerators.PasswordGenerator;
+import com.key.password_manager.stringgenerators.RandomStringGenerator;
 import com.key.password_manager.utils.Helpers;
 
 @Component
 public class KeyFactory {
 
 	@Autowired
-	@Qualifier("defaultPasswordGenerator")
-	private PasswordGenerator passwordGenerator;
+	@Qualifier("passwordGenerator")
+	private RandomStringGenerator passwordGenerator;
 
 	private Logger LOG = LoggerFactory.getLogger(KeyFactory.class);
 
@@ -34,7 +34,7 @@ public class KeyFactory {
 			iv = Helpers.NByteString(16);
 		}
 		if (Objects.isNull(type)) {
-			type = AESKeyType.PASSWORD;
+			type = AESKeyType.NONE;
 		}
 		return new AESKey(key, salt, iv, type);
 	}
