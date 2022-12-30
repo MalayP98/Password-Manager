@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import com.key.password_manager.key.Key;
 import com.key.password_manager.key.KeyFactory;
+import com.key.password_manager.key.KeyProperties;
 import com.key.password_manager.locks.Lock;
 import com.key.password_manager.stringgenerators.RandomStringGenerator;
 
@@ -20,36 +21,30 @@ public class OtpFactory {
 	@Autowired
 	private Lock lock;
 
-	@Value("${com.keys.otp.length}")
-	private int OTP_LENGTH;
+	@Autowired
+	private OtpProperties otpProperties;
 
-	@Value("${com.keys.otp.expiry}")
-	private int EXPIRY_TIME;
-
-	// delete when KeyFactory is replaced
-	@Value("${com.keys.default.aeskey.salt}")
-	private String salt;
-
-	// delete when KeyFactory is replaced
-	@Value("${com.keys.default.aeskey.iv}")
-	private String iv;
+	@Autowired
+	private KeyProperties keyProperties;
 
 	// replace KeyFactory
 	@Autowired
 	private KeyFactory keyFactory;
 
 	public Otp createOtp(String recipientEmail) {
-		Otp otp = new Otp(otpGenerator.generate(OTP_LENGTH));
+		Otp otp = new Otp(otpGenerator.generate(otpProperties.otpLength()));
 		otp.setUserEmail(recipientEmail);
-		otp.setExpiryDate(Date.from(new Date().toInstant().plusSeconds(60 * EXPIRY_TIME)));
+		otp.setExpiryDate(
+				Date.from(new Date().toInstant().plusSeconds(60 * otpProperties.timeToLive())));
 		return otp;
 	}
 
 	public Otp createOtpWithEncryptedEmail(String recipientEmail) {
-		Otp otp = new Otp(otpGenerator.generate(OTP_LENGTH));
-		otp.setUserEmail(
-				lock.lock(keyFactory.createAESKey(otp.getOtp(), salt, iv, null), recipientEmail));
-		otp.setExpiryDate(Date.from(new Date().toInstant().plusSeconds(60 * EXPIRY_TIME)));
+		Otp otp = new Otp(otpGenerator.generate(otpProperties.otpLength()));
+		otp.setUserEmail(lock.lock(keyFactory.createAESKey(otp.getOtp(), keyProperties.salt(),
+				keyProperties.iv(), null), recipientEmail));
+		otp.setExpiryDate(
+				Date.from(new Date().toInstant().plusSeconds(60 * otpProperties.timeToLive())));
 		return otp;
 	}
 
