@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import com.key.password_manager.email.Email;
 import com.key.password_manager.otpverification.Otp;
 import com.key.password_manager.otpverification.OtpConstants;
-import com.key.password_manager.otpverification.OtpProperties;
 import com.key.password_manager.otpverification.OtpRepository;
 
 @Service("databaseOTPService")

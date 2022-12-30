@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class RandomStringGeneratorConfigurer {
+public class DefaultRandomStringGeneratorConfigurer {
 
 	@Bean("passwordGenerator")
 	public RandomStringGenerator passwordGenerator() throws Exception {
@@ -13,7 +13,7 @@ public class RandomStringGeneratorConfigurer {
 				.add(CharacterSets.NUMERICS).build();
 	}
 
-	@Bean("otpGenerator")
+	@Bean("simpleStringGenerator")
 	public RandomStringGenerator otpGenerator() throws Exception {
 		return new RandomStringGeneratorBuilder().add(CharacterSets.UPPERCASE_ALPHABETS)
 				.add(CharacterSets.NUMERICS).build();

@@ -15,7 +15,8 @@ public abstract class AbstractKey extends BaseModel implements Key {
 	@Enumerated(EnumType.STRING)
 	private KeyType keyType;
 
-	public AbstractKey() {
+	public AbstractKey(KeyType keyType) {
+		setKeyType(keyType);
 	}
 
 	public AbstractKey(String key, KeyType keyType) {

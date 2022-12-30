@@ -84,11 +84,9 @@ public class AuthenticationService {
 	 *                 pair is encoded with password encoder as this is being saved in the database.
 	 * 
 	 * @return : generated key pair which is used for credential lock and unlock.
-	 * @throws EncryptionException
-	 * @throws KeyException
+	 * @throws Exception
 	 */
-	private PasswordEncryptionKeyPair getKeyPair(String password)
-			throws EncryptionException, KeyException {
+	private PasswordEncryptionKeyPair getKeyPair(String password) throws Exception {
 		PasswordEncryptionKeyPair passwordEncryptionKeyPair =
 				keyPairFactory.createPasswordEncryptionKeyPairWithRandomEncryptionKey(password);
 		passwordEncryptionKeyPair.getPassword().setKey(passwordEncoder.encode(password));

@@ -23,7 +23,7 @@ public class AESKey extends AbstractKey {
 	private AESKeyType type;
 
 	public AESKey() {
-		super();
+		super(KeyType.AES);
 	}
 
 	public AESKey(String key, String salt, String iv, AESKeyType type) {

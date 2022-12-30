@@ -23,12 +23,12 @@ public class KeyPairFactory {
 	private Lock lock;
 
 	public PasswordEncryptionKeyPair createPasswordEncryptionKeyPairWithRandomEncryptionKey(
-			String password) throws EncryptionException, KeyException {
+			String password) throws Exception {
 		return createPasswordEncryptionKeyPair(password, null);
 	}
 
 	public PasswordEncryptionKeyPair createPasswordEncryptionKeyPair(String password,
-			String encryptionKey) throws EncryptionException, KeyException {
+			String encryptionKey) throws Exception {
 		Key passwordKey_ = keyFactory.createPassword(password);
 		Key encryptionKey_ = keyFactory.createEncryptionKey(encryptionKey);
 		encryptionKey_.setKey(lock.lock(passwordKey_, encryptionKey_.getKey()));

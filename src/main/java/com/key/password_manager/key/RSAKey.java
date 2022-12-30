@@ -6,7 +6,11 @@ import com.key.password_manager.key.types.RSAKeyType;
 
 public class RSAKey extends AbstractKey {
 
-	private RSAKeyType type;
+	private RSAKeyType subKeyType;
+
+	public RSAKey() {
+		super(KeyType.RSA);
+	}
 
 	public RSAKey(String key, RSAKeyType type) {
 		super(key, KeyType.RSA);
@@ -18,15 +22,15 @@ public class RSAKey extends AbstractKey {
 	}
 
 	public boolean isPrivateKey() {
-		return RSAKeyType.PRIVATE.equals(type);
+		return RSAKeyType.PRIVATE.equals(subKeyType);
 	}
 
 	public boolean isPublicKey() {
-		return RSAKeyType.PUBLIC.equals(type);
+		return RSAKeyType.PUBLIC.equals(subKeyType);
 	}
 
 	public RSAKeyType getSubKeyType() {
-		return type;
+		return subKeyType;
 	}
 
 	public void setSubKeyType(RSAKeyType type) {
@@ -34,6 +38,6 @@ public class RSAKey extends AbstractKey {
 			throw new NullPointerException(
 					"Public/Private key type not provided while creation of RSA Key.");
 		}
-		this.type = type;
+		this.subKeyType = type;
 	}
 }

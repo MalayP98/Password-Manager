@@ -13,7 +13,7 @@ public class OtpProperties {
 	@Value("${com.keys.otp.length}")
 	private int OTP_LENGTH;
 
-	@Value("${com.keys.otp.expiry}")
+	@Value("${com.keys.otp.ttl}")
 	private int EXPIRY_TIME;
 
 	public int otpLength() {
