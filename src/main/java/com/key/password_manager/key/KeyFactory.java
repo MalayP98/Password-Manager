@@ -18,33 +18,29 @@ public class KeyFactory {
 	@Qualifier("passwordGenerator")
 	private RandomStringGenerator passwordGenerator;
 
+	@Autowired
+	@Qualifier("simpleStringGenerator")
+	private RandomStringGenerator simpleStringGenerator;
+
+	@Autowired
+	private KeyProperties keyProperties;
+
 	private Logger LOG = LoggerFactory.getLogger(KeyFactory.class);
 
-	public Key createAESKey(String key, String salt, String iv, AESKeyType type) {
-		if (Objects.isNull(key) || key.isEmpty()) {
-			LOG.debug("Key is null or empty, creating random key.");
-			key = passwordGenerator.generate(12);
+	public Key createPassword(String password) throws Exception {
+		if (Objects.isNull(password)) {
+			password = passwordGenerator.generate(keyProperties.keyLength());
 		}
-		if (Objects.isNull(salt) || salt.isEmpty()) {
-			LOG.debug("Salt is null or empty, creating random salt.");
-			salt = Helpers.randomString();
-		}
-		if (Objects.isNull(iv) || iv.isEmpty()) {
-			LOG.debug("IV is null or empty, creating random IV.");
-			iv = Helpers.NByteString(16);
-		}
-		if (Objects.isNull(type)) {
-			type = AESKeyType.NONE;
-		}
-		return new AESKey(key, salt, iv, type);
+		return new AESKeyBuilder().setKey(password).setSalt(simpleStringGenerator.generate(8))
+				.setIV(Helpers.NByteString(16)).setAESKeyType(AESKeyType.PASSWORD).build();
 	}
 
-	public Key createPassword(String password) {
-		return createAESKey(password, null, null, AESKeyType.PASSWORD);
-	}
-
-	public Key createEncryptionKey(String encryptionKey) {
-		return createAESKey(encryptionKey, null, null, AESKeyType.ENCYPTION_KEY);
+	public Key createEncryptionKey(String encryptionKey) throws Exception {
+		if (Objects.isNull(encryptionKey)) {
+			encryptionKey = passwordGenerator.generate(keyProperties.keyLength());
+		}
+		return new AESKeyBuilder().setKey(encryptionKey).setSalt(simpleStringGenerator.generate(8))
+				.setIV(Helpers.NByteString(16)).setAESKeyType(AESKeyType.ENCYPTION_KEY).build();
 	}
 
 	public Key createRSAKey(String key, RSAKeyType subKeyType) {

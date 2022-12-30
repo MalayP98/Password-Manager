@@ -3,10 +3,8 @@ package com.key.password_manager.otpverification;
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import com.key.password_manager.key.Key;
-import com.key.password_manager.key.KeyFactory;
+import com.key.password_manager.key.AESKeyBuilder;
 import com.key.password_manager.key.KeyProperties;
 import com.key.password_manager.locks.Lock;
 import com.key.password_manager.stringgenerators.RandomStringGenerator;
@@ -15,7 +13,7 @@ import com.key.password_manager.stringgenerators.RandomStringGenerator;
 public class OtpFactory {
 
 	@Autowired
-	@Qualifier("otpGenerator")
+	@Qualifier("simpleStringGenerator")
 	private RandomStringGenerator otpGenerator;
 
 	@Autowired
@@ -27,10 +25,6 @@ public class OtpFactory {
 	@Autowired
 	private KeyProperties keyProperties;
 
-	// replace KeyFactory
-	@Autowired
-	private KeyFactory keyFactory;
-
 	public Otp createOtp(String recipientEmail) {
 		Otp otp = new Otp(otpGenerator.generate(otpProperties.otpLength()));
 		otp.setUserEmail(recipientEmail);
@@ -39,10 +33,10 @@ public class OtpFactory {
 		return otp;
 	}
 
-	public Otp createOtpWithEncryptedEmail(String recipientEmail) {
+	public Otp createOtpWithEncryptedEmail(String recipientEmail) throws Exception {
 		Otp otp = new Otp(otpGenerator.generate(otpProperties.otpLength()));
-		otp.setUserEmail(lock.lock(keyFactory.createAESKey(otp.getOtp(), keyProperties.salt(),
-				keyProperties.iv(), null), recipientEmail));
+		otp.setUserEmail(lock.lock(new AESKeyBuilder().setKey(otp.getOtp())
+				.setSalt(keyProperties.salt()).setIV(keyProperties.iv()).build(), recipientEmail));
 		otp.setExpiryDate(
 				Date.from(new Date().toInstant().plusSeconds(60 * otpProperties.timeToLive())));
 		return otp;

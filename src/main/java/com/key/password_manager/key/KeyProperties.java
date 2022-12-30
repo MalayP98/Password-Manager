@@ -15,6 +15,9 @@ public class KeyProperties {
 	@Value("${com.keys.default.aeskey.secret}")
 	private String secret;
 
+	@Value("${com.keys.default.aeskey.length}")
+	private int keyLength;
+
 	public String salt() {
 		return salt;
 	}
@@ -25,5 +28,9 @@ public class KeyProperties {
 
 	public String secret() {
 		return secret;
+	}
+
+	public int keyLength() {
+		return keyLength;
 	}
 }

@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.key.password_manager.otpverification.otpservices.OtpService;
 
-
 @RestController
 @RequestMapping("/public" + "/otp")
 public class OtpController {

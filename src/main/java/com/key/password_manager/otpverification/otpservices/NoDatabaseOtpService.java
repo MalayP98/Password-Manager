@@ -3,10 +3,10 @@ package com.key.password_manager.otpverification.otpservices;
 import java.util.Date;
 import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.key.password_manager.email.Email;
-import com.key.password_manager.key.KeyFactory;
+import com.key.password_manager.key.AESKeyBuilder;
+import com.key.password_manager.key.KeyProperties;
 import com.key.password_manager.locks.Lock;
 import com.key.password_manager.otpverification.Otp;
 import com.key.password_manager.otpverification.OtpConstants;
@@ -14,17 +14,8 @@ import com.key.password_manager.otpverification.OtpConstants;
 @Service("nodatabaseOTPService")
 public class NoDatabaseOtpService extends AbstractOtpService {
 
-	// delete when KeyFactory is replaced
-	@Value("${com.keys.default.aeskey.salt}")
-	private String salt;
-
-	// delete when KeyFactory is replaced
-	@Value("${com.keys.default.aeskey.iv}")
-	private String iv;
-
-	// replace KeyFactory
 	@Autowired
-	private KeyFactory keyFactory;
+	private KeyProperties keyProperties;
 
 	@Autowired
 	private Lock lock;
@@ -49,8 +40,9 @@ public class NoDatabaseOtpService extends AbstractOtpService {
 			return false;
 		}
 		try {
-			return userService.enableUserWithEmail(lock.unlock(
-					keyFactory.createAESKey(otp.getOtp(), salt, iv, null), otp.getUserEmail()));
+			return userService.enableUserWithEmail(lock
+					.unlock(new AESKeyBuilder().setKey(otp.getOtp()).setSalt(keyProperties.salt())
+							.setIV(keyProperties.iv()).build(), otp.getUserEmail()));
 		} catch (Exception e) {
 			e.printStackTrace();
 			// LOG
