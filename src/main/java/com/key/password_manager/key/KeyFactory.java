@@ -27,20 +27,20 @@ public class KeyFactory {
 
 	private Logger LOG = LoggerFactory.getLogger(KeyFactory.class);
 
-	public Key createPassword(String password) throws Exception {
-		if (Objects.isNull(password)) {
-			password = passwordGenerator.generate(keyProperties.keyLength());
+	private Key createAESKey(String key, AESKeyType aesKeyType) throws Exception {
+		if (Objects.isNull(key)) {
+			key = passwordGenerator.generate(keyProperties.keyLength());
 		}
-		return new AESKeyBuilder().setKey(password).setSalt(simpleStringGenerator.generate(8))
-				.setIV(Helpers.NByteString(16)).setAESKeyType(AESKeyType.PASSWORD).build();
+		return new AESKeyBuilder().setKey(key).setSalt(simpleStringGenerator.generate(8))
+				.setIV(Helpers.NByteString(16)).setAESKeyType(aesKeyType).build();
+	}
+
+	public Key createPassword(String password) throws Exception {
+		return createAESKey(password, AESKeyType.PASSWORD);
 	}
 
 	public Key createEncryptionKey(String encryptionKey) throws Exception {
-		if (Objects.isNull(encryptionKey)) {
-			encryptionKey = passwordGenerator.generate(keyProperties.keyLength());
-		}
-		return new AESKeyBuilder().setKey(encryptionKey).setSalt(simpleStringGenerator.generate(8))
-				.setIV(Helpers.NByteString(16)).setAESKeyType(AESKeyType.ENCYPTION_KEY).build();
+		return createAESKey(encryptionKey, AESKeyType.ENCYPTION_KEY);
 	}
 
 	public Key createRSAKey(String key, RSAKeyType subKeyType) {
@@ -52,17 +52,5 @@ public class KeyFactory {
 
 	public Key createRSAKey(java.security.Key key, RSAKeyType subKeyType) {
 		return createRSAKey(Helpers.keyToString(key), subKeyType);
-	}
-
-	public Key clone(Key key) {
-		switch (key.type()) {
-			case AES:
-				return new AESKey((AESKey) key);
-			case RSA:
-				return new RSAKey((RSAKey) key);
-			default:
-				break;
-		}
-		return null;
 	}
 }
