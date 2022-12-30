@@ -33,8 +33,8 @@ public class NoDatabaseOtpService extends AbstractOtpService {
 	public Otp sendOTP(String recipientEmail) {
 		try {
 			Otp otp = otpFactory.createOtpWithEncryptedEmail(recipientEmail);
-			emailService.sendHTMLMail(new Email(recipientEmail, OtpConstants.SUBJECT,
-					String.format(OtpConstants.OTP_MESSAGE, EXPIRY_TIME, otp.getOtp())));
+			emailService.sendHTMLMail(new Email(recipientEmail, OtpConstants.SUBJECT, String
+					.format(OtpConstants.OTP_MESSAGE, otpProperties.timeToLive(), otp.getOtp())));
 			return otp;
 		} catch (Exception e) {
 			e.printStackTrace();

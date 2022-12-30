@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.key.password_manager.email.Email;
 import com.key.password_manager.otpverification.Otp;
 import com.key.password_manager.otpverification.OtpConstants;
+import com.key.password_manager.otpverification.OtpProperties;
 import com.key.password_manager.otpverification.OtpRepository;
 
 @Service("databaseOTPService")
@@ -25,8 +26,8 @@ public class DatabaseOtpService extends AbstractOtpService {
 				otp = otpFactory.refresh(otp);
 			else
 				return otp;
-			emailService.sendHTMLMail(new Email(recipientEmail, OtpConstants.SUBJECT,
-					String.format(OtpConstants.OTP_MESSAGE, EXPIRY_TIME, otp.getOtp())));
+			emailService.sendHTMLMail(new Email(recipientEmail, OtpConstants.SUBJECT, String
+					.format(OtpConstants.OTP_MESSAGE, otpProperties.timeToLive(), otp.getOtp())));
 			return otpRepository.save(otp);
 		} catch (Exception e) {
 			e.printStackTrace();
