@@ -1,12 +1,10 @@
 package com.key.password_manager.keypair;
 
-import java.security.KeyException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import com.key.password_manager.encryption.exceptions.EncryptionException;
 import com.key.password_manager.key.Key;
 import com.key.password_manager.key.KeyFactory;
 import com.key.password_manager.key.types.KeyType;
@@ -22,17 +20,17 @@ public class KeyPairFactory {
 	@Autowired
 	private Lock lock;
 
-	public PasswordEncryptionKeyPair createPasswordEncryptionKeyPairWithRandomEncryptionKey(
-			String password) throws Exception {
-		return createPasswordEncryptionKeyPair(password, null);
-	}
-
 	public PasswordEncryptionKeyPair createPasswordEncryptionKeyPair(String password,
 			String encryptionKey) throws Exception {
 		Key passwordKey_ = keyFactory.createPassword(password);
 		Key encryptionKey_ = keyFactory.createEncryptionKey(encryptionKey);
 		encryptionKey_.setKey(lock.lock(passwordKey_, encryptionKey_.getKey()));
 		return new PasswordEncryptionKeyPair(passwordKey_, encryptionKey_);
+	}
+
+	public PasswordEncryptionKeyPair createPasswordEncryptionKeyPairWithRandomEncryptionKey(
+			String password) throws Exception {
+		return createPasswordEncryptionKeyPair(password, null);
 	}
 
 	public PasswordEncryptionKeyPair createPasswordEncryptionKeyPair(Key password,

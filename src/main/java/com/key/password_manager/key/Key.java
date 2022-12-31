@@ -2,7 +2,7 @@ package com.key.password_manager.key;
 
 import com.key.password_manager.key.types.KeyType;
 
-public interface Key extends Cloneable {
+public interface Key {
 
 	public String getKey();
 

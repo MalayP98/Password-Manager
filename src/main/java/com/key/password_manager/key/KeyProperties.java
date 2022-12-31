@@ -3,6 +3,10 @@ package com.key.password_manager.key;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+/**
+ * Stores several key properties which is being used throughout the project so that there is not
+ * need to create a varible everytime someone wants to used these properties.
+ */
 @Component
 public class KeyProperties {
 

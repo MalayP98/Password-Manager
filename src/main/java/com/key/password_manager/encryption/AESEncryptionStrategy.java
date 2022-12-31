@@ -26,8 +26,8 @@ import com.key.password_manager.utils.Helpers;
 public class AESEncryptionStrategy implements EncryptionStrategy {
 
 	/**
-	 * Converts {@link Key} to a {@link SecretKey} by using the {@link Key#getKey()} and
-	 * {@link AESKey#getSalt()}. Then returns result produced by
+	 * Encrypt data with {@code AES} algorithm. Converts {@link Key} to a {@link SecretKey} by using
+	 * the {@link Key#getKey()} and {@link AESKey#getSalt()}. Then returns result produced by
 	 * {@link #encrypt(SecretKey, IvParameterSpec, String)} method.
 	 */
 	@Override
@@ -42,8 +42,8 @@ public class AESEncryptionStrategy implements EncryptionStrategy {
 	}
 
 	/**
-	 * Same as {@link #encrypt(Key, String)}. Excepts it calls the
-	 * {@link #decrypt(SecretKey, IvParameterSpec, String)} method.
+	 * Decrypt data with {@code AES} algorithm. Same as {@link #encrypt(Key, String)}. Excepts it
+	 * calls the {@link #decrypt(SecretKey, IvParameterSpec, String)} method.
 	 */
 	@Override
 	public String decrypt(Key key, String data) throws KeyException {
