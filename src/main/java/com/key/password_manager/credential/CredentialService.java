@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import com.key.password_manager.cache.RedisCache;
 import com.key.password_manager.locks.CredentialLock;
 import com.key.password_manager.user.User;
 import com.key.password_manager.user.UserService;
@@ -22,6 +23,9 @@ public class CredentialService {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private RedisCache<Credential> redisCache;
 
 	private final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
@@ -60,7 +64,9 @@ public class CredentialService {
 	 * @return
 	 */
 	public Credential retriveCredential(Long ownerId, Long credentialId, String lockedPassword) {
-		Credential credential = null;
+		Credential credential = redisCache.findEntityById(credentialId, "CRED");
+		if (Objects.nonNull(credential))
+			return credential;
 		try {
 			credential = credentialRepository.findByIdAndOwnerId(credentialId, ownerId);
 			credential.setPassword(credentialLock.unlock(credential.getOwner(), lockedPassword,
@@ -68,6 +74,8 @@ public class CredentialService {
 		} catch (Exception e) {
 			LOG.error("Cannot get credential. Error message: {}", e.getMessage());
 		}
+		if (Objects.nonNull(credential))
+			redisCache.save(credential, "CRED");
 		return credential;
 	}
 

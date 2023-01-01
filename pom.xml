@@ -80,7 +80,6 @@
 		<dependency>
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>
-			<version>3.9.0</version>
 		</dependency>
 	</dependencies>
 	<build>

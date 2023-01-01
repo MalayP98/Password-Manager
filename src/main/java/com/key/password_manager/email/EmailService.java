@@ -28,7 +28,7 @@ public class EmailService {
 		javaMailSender.send(mailMessage);
 	}
 
-	/* Send a HTML mail. */
+	/* Sends a HTML mail. */
 	public void sendHTMLMail(Email email) throws MessagingException {
 		MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
