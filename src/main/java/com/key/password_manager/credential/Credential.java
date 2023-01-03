@@ -6,10 +6,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.key.password_manager.cache.CacheNameIdentifier;
 import com.key.password_manager.user.User;
 import com.key.password_manager.utils.BaseModel;
 
 @Entity
+@CacheNameIdentifier(cacheName = "CREDENTIAL")
 public class Credential extends BaseModel {
 
 	private String username;

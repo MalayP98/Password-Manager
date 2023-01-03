@@ -23,8 +23,8 @@ public class SecurityConfigurations {
 
 	@Bean
 	public SecurityFilterChain configureHttpSecurity(HttpSecurity httpSecurity) throws Exception {
-		httpSecurity.authorizeRequests().antMatchers("/authentication/**", "/public/**")
-				.permitAll();
+		httpSecurity.authorizeRequests()
+				.antMatchers("/authentication/**", "/public/**", "/actuator/**").permitAll();
 		httpSecurity.authorizeRequests().antMatchers("/api/**").authenticated();
 		httpSecurity.formLogin().disable();
 		httpSecurity.httpBasic().disable();
