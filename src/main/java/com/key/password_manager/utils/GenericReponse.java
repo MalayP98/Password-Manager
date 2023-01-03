@@ -1,29 +1,51 @@
 package com.key.password_manager.utils;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class GenericReponse {
 
-    private Map<String, String> responseMap = new HashMap<>();
+	private Boolean status;
 
-    public GenericReponse add(String key, String value) {
-        responseMap.put(key, value);
-        return this;
-    }
+	private String message;
 
-    @Override
-    public String toString() {
-        return responseMap.toString();
-    }
+	private String error;
 
-    public String toJsonString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("{ \n");
-        for (Map.Entry<String, String> entrySet : responseMap.entrySet()) {
-            builder.append("\"" + entrySet.getKey() + "\" : \"" + entrySet.getValue() + "\", \n");
-        }
-        builder.append("}");
-        return builder.toString();
-    }
+	private String jwt;
+
+	public Boolean getStatus() {
+		return status;
+	}
+
+	public GenericReponse setStatus(Boolean status) {
+		this.status = status;
+		return this;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public GenericReponse setMessage(String message) {
+		this.message = message;
+		return this;
+	}
+
+	public String getError() {
+		return error;
+	}
+
+	public GenericReponse setError(String error) {
+		this.error = error;
+		return this;
+	}
+
+	public String getJwt() {
+		return jwt;
+	}
+
+	public GenericReponse setJwt(String jwt) {
+		this.jwt = jwt;
+		return this;
+	}
 }

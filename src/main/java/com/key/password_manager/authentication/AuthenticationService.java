@@ -13,6 +13,7 @@ import com.key.password_manager.keypair.PasswordEncryptionKeyPair;
 import com.key.password_manager.security.JWTGenerator;
 import com.key.password_manager.user.User;
 import com.key.password_manager.user.UserService;
+import com.key.password_manager.utils.GenericReponse;
 
 @Service
 public class AuthenticationService {
@@ -37,21 +38,24 @@ public class AuthenticationService {
 	 * Now we check if the retrived or created user are enabled or not. If user is enabled then send
 	 * a message indicating the user is already registered else we send user an OTP for verifcation.
 	 */
-	public String registerUser(AuthenticationModel registrationData) throws Exception {
+	public GenericReponse registerUser(AuthenticationModel registrationData) throws Exception {
 		if (!isPasswordStrong(registrationData.getPassword()))
-			return "Weak Password!";
+			return new GenericReponse().setStatus(false).setMessage("Weak Password!");
 		User user = userService.getUserWithRegistrationStatus(registrationData.getEmail(), true);
 		if (Objects.isNull(user)) {
 			user = userService.registerUser(new User(registrationData.getEmail(),
 					getKeyPair(registrationData.getPassword()), false, true));
 		}
-		return "User registered. To verfiy the user generate an OTP here : POST /otp/generate/.";
+		return new GenericReponse().setStatus(false).setMessage(
+				"User registered. To verfiy the user generate an OTP here : POST /otp/generate/.");
 	}
 
 	/**
 	 * Authenticate the user using {@link #authenticate(AuthenticationModel)} method. If successful
 	 * then a JWT is created with user's email and returned. Else a message is returned indicating
 	 * that user with given email does not exist.
+	 * 
+	 * @return JWT required to use protectred resources
 	 */
 	public String loginUser(AuthenticationModel authModel) throws Exception {
 		if (authenticate(authModel)) {

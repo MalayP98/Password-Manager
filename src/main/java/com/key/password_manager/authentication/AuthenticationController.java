@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.key.password_manager.otpverification.Otp;
 import com.key.password_manager.otpverification.otpservices.DatabaseOtpService;
+import com.key.password_manager.utils.GenericReponse;
 
 @RestController
 @RequestMapping("/authentication")
@@ -21,17 +22,18 @@ public class AuthenticationController {
 	private DatabaseOtpService otpService;
 
 	@PostMapping("/login")
-	public ResponseEntity<String> login(@RequestBody AuthenticationModel authenticationData)
+	public ResponseEntity<GenericReponse> login(@RequestBody AuthenticationModel authenticationData)
 			throws Exception {
-		return new ResponseEntity<String>(authenticationService.loginUser(authenticationData),
+		return new ResponseEntity<GenericReponse>(
+				new GenericReponse().setJwt(authenticationService.loginUser(authenticationData)),
 				HttpStatus.OK);
 	}
 
 	@PostMapping("/register")
-	public ResponseEntity<?> register(@RequestBody AuthenticationModel registrationData)
-			throws Exception {
-		return new ResponseEntity<String>(authenticationService.registerUser(registrationData),
-				HttpStatus.CREATED);
+	public ResponseEntity<GenericReponse> register(
+			@RequestBody AuthenticationModel registrationData) throws Exception {
+		return new ResponseEntity<GenericReponse>(
+				authenticationService.registerUser(registrationData), HttpStatus.CREATED);
 	}
 
 	@PostMapping("/verify" + "/otp")
