@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import com.key.password_manager.cache.CacheNameIdentifier;
 import com.key.password_manager.key.AESKey;
 import com.key.password_manager.key.Key;
 import com.key.password_manager.keypair.PasswordEncryptionKeyPair;
